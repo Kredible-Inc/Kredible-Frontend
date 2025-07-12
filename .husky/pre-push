@@ -1,0 +1,28 @@
+#!/bin/sh
+# Pre-push hook - runs all validations before pushing
+echo "🔍 Running pre-push validations..."
+
+# Run lint-staged first
+echo "📝 Running lint-staged..."
+npx lint-staged --no-stash
+if [ $? -ne 0 ]; then
+    echo "⚠️  Lint issues found. Attempting to auto-fix..."
+    npm run lint:fix
+    npm run format
+    echo "🔄 Re-running lint-staged after auto-fix..."
+    npx lint-staged --no-stash
+    if [ $? -ne 0 ]; then
+        echo "❌ Lint issues could not be auto-fixed. Please fix manually."
+        exit 1
+    fi
+fi
+
+# Run build
+echo "🏗️  Running build..."
+npm run build
+if [ $? -ne 0 ]; then
+    echo "❌ Build failed. Please fix the issues before pushing."
+    exit 1
+fi
+
+echo "✅ All pre-push validations passed!"

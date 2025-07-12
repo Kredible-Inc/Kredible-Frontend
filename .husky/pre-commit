@@ -1,0 +1,6 @@
+#!/bin/sh
+# Pre-commit hook - runs prettier formatting
+echo "🎨 Running prettier formatting..."
+npm run format
+
+echo "✅ Pre-commit passed (code formatted)"
