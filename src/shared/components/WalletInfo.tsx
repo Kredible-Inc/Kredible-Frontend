@@ -22,4 +22,4 @@ export default function WalletInfo() {
       </p>
     </div>
   );
-} 
+}
