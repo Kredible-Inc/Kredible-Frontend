@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Inter } from "next/font/google";
 
 export default function Home() {
   return (
@@ -21,7 +22,7 @@ export default function Home() {
             .
           </li>
           <li className="tracking-[-.01em]">
-            Save and see your ho's changes instantly.
+            Save and see your ho&apos;s changes instantly.
           </li>
         </ol>
 

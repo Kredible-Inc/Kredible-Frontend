@@ -17,6 +17,14 @@ if [ $? -ne 0 ]; then
     fi
 fi
 
+# Run lint global
+echo "🔎 Running full lint..."
+npm run lint
+if [ $? -ne 0 ]; then
+    echo "❌ Lint failed. Please fix the issues before pushing."
+    exit 1
+fi
+
 # Run build
 echo "🏗️  Running build..."
 npm run build
