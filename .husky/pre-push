@@ -34,3 +34,4 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "✅ All pre-push validations passed!"
+ 

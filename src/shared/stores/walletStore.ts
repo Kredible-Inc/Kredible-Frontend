@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import {
   connectWallet,
   disconnectWallet,
@@ -10,15 +10,18 @@ import {
 } from "@/shared/utils/stellar-wallet-kid";
 
 interface WalletState {
+  // State
   address: string | null;
   isConnected: boolean;
   isConnecting: boolean;
 
+  // Actions
   connect: () => Promise<void>;
   disconnect: () => void;
   checkConnection: () => Promise<void>;
   signTransaction: (xdr: string, network: string) => Promise<string>;
 
+  // Internal actions (for store management)
   setAddress: (address: string | null) => void;
   setConnecting: (connecting: boolean) => void;
 }
@@ -26,10 +29,12 @@ interface WalletState {
 export const useWalletStore = create<WalletState>()(
   persist(
     (set, get) => ({
+      // Initial state
       address: null,
       isConnected: false,
       isConnecting: false,
 
+      // Actions
       connect: async () => {
         set({ isConnecting: true });
 
@@ -89,6 +94,7 @@ export const useWalletStore = create<WalletState>()(
         return await signTransaction(xdr, network);
       },
 
+      // Internal actions
       setAddress: (address: string | null) => {
         set({
           address,
@@ -102,10 +108,12 @@ export const useWalletStore = create<WalletState>()(
     }),
     {
       name: "wallet-storage", // localStorage key
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         address: state.address,
         isConnected: state.isConnected,
       }), // Only persist these fields
+      skipHydration: true, // Skip hydration to avoid SSR issues
     },
   ),
 );
