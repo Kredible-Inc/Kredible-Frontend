@@ -1,52 +1,50 @@
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  addDoc,
-} from "firebase/firestore";
-import { firebaseDB } from "@/shared/config/firebase";
 import { useAuthStore } from "@/shared/stores/authStore";
-
-interface User {
-  walletAddress: string;
-  email?: string;
-  name?: string;
-  createdAt?: string;
-  [key: string]: any;
-}
+import { useUserStore } from "@/shared/stores/userStore";
+import { User } from "@/shared/types/user.types";
+import { UserService } from "@/shared/services/userService";
 
 // Variable global para almacenar la función resolve
-let resolveUserInfo: ((value: { name: string; email: string }) => void) | null = null;
+let resolveUserInfo: ((value: { name: string; email: string }) => void) | null =
+  null;
 
 // Este puede ejecutarse después de conectar la wallet
 export const handleWalletAuth = async (walletAddress: string) => {
   try {
-    const usersRef = collection(firebaseDB, "users");
-    const q = query(usersRef, where("walletAddress", "==", walletAddress));
-    const snapshot = await getDocs(q);
+    // Check if user exists
+    const existingUser = await UserService.getUserByWalletAddress(walletAddress);
 
-    if (!snapshot.empty) {
+    if (existingUser) {
       // Usuario existe, hacer login
-      const userData = snapshot.docs[0].data() as User;
-      useAuthStore.getState().login(userData);
-      return { success: true, isNewUser: false, user: userData };
+      useAuthStore.getState().login(existingUser);
+      useUserStore.getState().setUser(existingUser);
+      
+      return { success: true, isNewUser: false, user: existingUser };
     }
 
     // Si no existe, abrir formulario modal para pedir nombre y correo
     const { name, email } = await promptUserForInfo();
 
-    const newUser: User = {
+    const newUser: Omit<User, 'id'> = {
       walletAddress,
       name,
       email,
       createdAt: new Date().toISOString(),
+      userRole: 'borrower', // Default role
+      lendingHistory: [],
+      borrowingHistory: [],
+      totalLent: 0,
+      totalBorrowed: 0,
+      reputation: 0
     };
 
-    await addDoc(usersRef, newUser);
+    // Create user using UserService
+    const userWithId = await UserService.createUser(newUser);
 
-    useAuthStore.getState().login(newUser);
-    return { success: true, isNewUser: true, user: newUser };
+    // Actualizar stores
+    useAuthStore.getState().login(userWithId);
+    useUserStore.getState().setUser(userWithId);
+    
+    return { success: true, isNewUser: true, user: userWithId };
   } catch (error) {
     console.error("Error in handleWalletAuth:", error);
     throw error;
@@ -54,21 +52,58 @@ export const handleWalletAuth = async (walletAddress: string) => {
 };
 
 // Función para obtener información del usuario (modal)
-export const promptUserForInfo = (): Promise<{ name: string; email: string }> => {
+export const promptUserForInfo = (): Promise<{
+  name: string;
+  email: string;
+}> => {
   return new Promise((resolve) => {
     // Guardar la función resolve
     resolveUserInfo = resolve;
-    
+
     // Crear un evento personalizado para abrir el modal
-    const event = new CustomEvent('openUserInfoModal');
+    const event = new CustomEvent("openUserInfoModal");
     window.dispatchEvent(event);
   });
 };
 
 // Función para resolver la promesa cuando se envía el formulario
-export const resolveUserInfoPromise = (userData: { name: string; email: string }) => {
+export const resolveUserInfoPromise = (userData: {
+  name: string;
+  email: string;
+}) => {
   if (resolveUserInfo) {
     resolveUserInfo(userData);
     resolveUserInfo = null;
   }
-}; 
+};
+
+// Función para actualizar datos del usuario en Firestore
+export const updateUserInFirestore = async (userId: string, updates: Partial<User>) => {
+  try {
+    await UserService.updateUser(userId, updates);
+    
+    // Actualizar el store local
+    const currentUser = useAuthStore.getState().user;
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...updates };
+      useAuthStore.getState().login(updatedUser);
+      useUserStore.getState().setUser(updatedUser);
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating user in Firestore:", error);
+    throw error;
+  }
+};
+
+// Función para obtener usuario por wallet address
+export const getUserByWalletAddress = async (walletAddress: string): Promise<User | null> => {
+  try {
+    return await UserService.getUserByWalletAddress(walletAddress);
+  } catch (error) {
+    console.error("Error getting user by wallet address:", error);
+    return null;
+  }
+};
+ 

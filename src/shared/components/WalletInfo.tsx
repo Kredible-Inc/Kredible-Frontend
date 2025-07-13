@@ -22,7 +22,7 @@ export default function WalletInfo() {
       <p className="text-xs text-blue-500 dark:text-blue-400 mt-1">
         Ready for Stellar transactions
       </p>
-      
+
       {isAuthenticated && user && (
         <div className="mt-3 pt-3 border-t border-blue-200 dark:border-blue-700">
           <p className="text-xs text-blue-600 dark:text-blue-300">
@@ -33,7 +33,8 @@ export default function WalletInfo() {
           </p>
           {user.createdAt && (
             <p className="text-xs text-blue-500 dark:text-blue-400">
-              <strong>Registrado:</strong> {new Date(user.createdAt).toLocaleDateString()}
+              <strong>Registrado:</strong>{" "}
+              {new Date(user.createdAt).toLocaleDateString()}
             </p>
           )}
         </div>

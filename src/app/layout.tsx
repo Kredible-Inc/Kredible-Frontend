@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import UserInfoModal from "@/shared/components/UserInfoModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Kredible",
-  description: "Kredible is a platform for creating and managing your digital assets.",
+  description:
+    "Kredible is a platform for creating and managing your digital assets.",
 };
 
 export default function RootLayout({
@@ -29,7 +29,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        <UserInfoModal />
       </body>
     </html>
   );

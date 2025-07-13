@@ -2,132 +2,188 @@
 
 import { useState, useEffect } from "react";
 import { resolveUserInfoPromise } from "@/shared/lib/auth";
+import { useAuthStore } from "@/shared/stores/authStore";
+import { useWalletStore } from "@/shared/stores/walletStore";
 
 export default function UserInfoModal() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-  });
-  const [error, setError] = useState("");
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; lastName?: string; email?: string }>({});
 
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isConnected = useWalletStore((state) => state.isConnected);
+
+  // Only open modal on custom event
   useEffect(() => {
     const handleOpenModal = () => {
-      setModalIsOpen(true);
-      setFormData({ name: "", email: "" });
-      setError("");
+      setIsOpen(true);
     };
-
-    window.addEventListener('openUserInfoModal', handleOpenModal);
+    window.addEventListener("openUserInfoModal", handleOpenModal);
     return () => {
-      window.removeEventListener('openUserInfoModal', handleOpenModal);
+      window.removeEventListener("openUserInfoModal", handleOpenModal);
     };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    // Validación
-    if (!formData.name.trim() || !formData.email.trim()) {
-      setError("Por favor completa todos los campos");
-      return;
+  const validateForm = () => {
+    const newErrors: { name?: string; lastName?: string; email?: string } = {};
+    if (!name.trim()) {
+      newErrors.name = "First name is required";
     }
-
-    if (!formData.email.includes("@")) {
-      setError("Por favor ingresa un email válido");
-      return;
+    if (!lastName.trim()) {
+      newErrors.lastName = "Last name is required";
     }
-
-    // Resolver la promesa y cerrar el modal
-    resolveUserInfoPromise(formData);
-    setModalIsOpen(false);
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      resolveUserInfoPromise({ name: `${name.trim()} ${lastName.trim()}`, email: email.trim() });
+      setIsOpen(false);
+      setName("");
+      setLastName("");
+      setEmail("");
+      setErrors({});
+    } catch (error) {
+      console.error("Error submitting user info:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleClose = () => {
-    setModalIsOpen(false);
+    setIsOpen(false);
+    setName("");
+    setLastName("");
+    setEmail("");
+    setErrors({});
   };
 
-  if (!modalIsOpen) return null;
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            Completa tu perfil
-          </h2>
-          <button
-            onClick={handleClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-[#0F1224] rounded-lg shadow-2xl border border-[#0B0A0B] max-w-md w-full">
+        {/* Header */}
+        <div className="p-6 border-b border-[#0B0A0B]">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-white">Welcome to Kredible</h2>
+              <p className="text-gray-400 mt-1">
+                Please complete your registration to continue
+              </p>
+            </div>
+            <button
+              onClick={handleClose}
+              className="text-gray-400 hover:text-white transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Nombre completo
+            <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">
+              First Name
             </label>
             <input
               type="text"
               id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              placeholder="Ingresa tu nombre completo"
-              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your first name"
+              className={`w-full px-4 py-3 bg-[#0B0A0B] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                errors.name ? 'border-red-500' : 'border-gray-700'
+              }`}
             />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-400">{errors.name}</p>
+            )}
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Correo electrónico
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-400 mb-2">
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Enter your last name"
+              className={`w-full px-4 py-3 bg-[#0B0A0B] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                errors.lastName ? 'border-red-500' : 'border-gray-700'
+              }`}
+            />
+            {errors.lastName && (
+              <p className="mt-1 text-sm text-red-400">{errors.lastName}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">
+              Email Address
             </label>
             <input
               type="email"
               id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              placeholder="Ingresa tu correo electrónico"
-              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email address"
+              className={`w-full px-4 py-3 bg-[#0B0A0B] border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                errors.email ? 'border-red-500' : 'border-gray-700'
+              }`}
             />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+            )}
           </div>
 
-          {error && (
-            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          <div className="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="text-blue-400 mt-0.5">ℹ️</div>
+              <div>
+                <h4 className="font-medium text-blue-200 mb-2">Account Creation</h4>
+                <p className="text-blue-100 text-sm">
+                  Your account will be created with the connected wallet address. 
+                  This information will be used for loan transactions and account management.
+                </p>
+              </div>
             </div>
-          )}
-
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Completar registro
-            </button>
           </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+          >
+            {isSubmitting ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Creating Account...
+              </>
+            ) : (
+              'Create Account'
+            )}
+          </button>
         </form>
       </div>
     </div>

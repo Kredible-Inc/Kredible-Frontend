@@ -14,13 +14,13 @@ interface WalletState {
   address: string | null;
   isConnected: boolean;
   isConnecting: boolean;
-  
+
   // Actions
   connect: () => Promise<void>;
   disconnect: () => void;
   checkConnection: () => Promise<void>;
   signTransaction: (xdr: string, network: string) => Promise<string>;
-  
+
   // Internal actions (for store management)
   setAddress: (address: string | null) => void;
   setConnecting: (connecting: boolean) => void;
@@ -37,13 +37,13 @@ export const useWalletStore = create<WalletState>()(
       // Actions
       connect: async () => {
         set({ isConnecting: true });
-        
+
         try {
           await connectWallet((address: string) => {
-            set({ 
-              address, 
-              isConnected: true, 
-              isConnecting: false 
+            set({
+              address,
+              isConnected: true,
+              isConnecting: false,
             });
           });
         } catch (error) {
@@ -55,10 +55,10 @@ export const useWalletStore = create<WalletState>()(
 
       disconnect: () => {
         disconnectWallet();
-        set({ 
-          address: null, 
-          isConnected: false, 
-          isConnecting: false 
+        set({
+          address: null,
+          isConnected: false,
+          isConnecting: false,
         });
       },
 
@@ -66,21 +66,21 @@ export const useWalletStore = create<WalletState>()(
         try {
           const address = await getPublicKey();
           if (address) {
-            set({ 
-              address, 
-              isConnected: true 
+            set({
+              address,
+              isConnected: true,
             });
           } else {
-            set({ 
-              address: null, 
-              isConnected: false 
+            set({
+              address: null,
+              isConnected: false,
             });
           }
         } catch {
           console.log("No wallet connected");
-          set({ 
-            address: null, 
-            isConnected: false 
+          set({
+            address: null,
+            isConnected: false,
           });
         }
       },
@@ -90,15 +90,15 @@ export const useWalletStore = create<WalletState>()(
         if (!address) {
           throw new Error("Wallet not connected");
         }
-        
+
         return await signTransaction(xdr, network);
       },
 
       // Internal actions
       setAddress: (address: string | null) => {
-        set({ 
-          address, 
-          isConnected: !!address 
+        set({
+          address,
+          isConnected: !!address,
         });
       },
 
@@ -109,11 +109,11 @@ export const useWalletStore = create<WalletState>()(
     {
       name: "wallet-storage", // localStorage key
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ 
+      partialize: (state) => ({
         address: state.address,
-        isConnected: state.isConnected 
+        isConnected: state.isConnected,
       }), // Only persist these fields
       skipHydration: true, // Skip hydration to avoid SSR issues
-    }
-  )
+    },
+  ),
 );

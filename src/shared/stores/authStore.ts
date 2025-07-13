@@ -2,14 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-interface User {
-  walletAddress: string;
-  email?: string;
-  name?: string;
-  createdAt?: string;
-  [key: string]: any;
-}
+import { User } from "@/shared/types/user.types";
 
 interface AuthState {
   user: User | null;
@@ -28,6 +21,7 @@ export const useAuthStore = create(
     }),
     {
       name: "auth-store",
-    }
-  )
-); 
+    },
+  ),
+);
+ 
