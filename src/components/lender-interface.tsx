@@ -1,37 +1,54 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { PlusCircle, DollarSign, TrendingUp, Loader2, User } from "lucide-react"
-import { LoanRequestsTable } from "./loan-requests-table"
-import { MyLoansTable } from "./my-loans-table"
-import { useLending } from "@/shared/contexts/lending-context"
-
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  PlusCircle,
+  DollarSign,
+  TrendingUp,
+  Loader2,
+  User,
+} from "lucide-react";
+import { LoanRequestsTable } from "./loan-requests-table";
+import { MyLoansTable } from "./my-loans-table";
+import { useLending } from "@/shared/contexts/lending-context";
 
 interface LenderInterfaceProps {
-  addToast: (message: string, type: "success" | "error" | "info") => void
+  addToast: (message: string, type: "success" | "error" | "info") => void;
 }
 
 export function LenderInterface({ addToast }: LenderInterfaceProps) {
-  const { createLenderOffer, isLoading } = useLending()
-  const [offerAmount, setOfferAmount] = useState<string>("")
-  const [offerRate, setOfferRate] = useState<string>("7.5")
-  const [maxDuration, setMaxDuration] = useState<string>("30")
-  const [minScore, setMinScore] = useState<string>("500")
+  const { createLenderOffer, isLoading } = useLending();
+  const [offerAmount, setOfferAmount] = useState<string>("");
+  const [offerRate, setOfferRate] = useState<string>("7.5");
+  const [maxDuration, setMaxDuration] = useState<string>("30");
+  const [minScore, setMinScore] = useState<string>("500");
 
   const handleCreateOffer = async () => {
-    const amount = Number.parseFloat(offerAmount)
-    const rate = Number.parseFloat(offerRate)
-    const duration = Number.parseInt(maxDuration)
-    const score = Number.parseInt(minScore)
+    const amount = Number.parseFloat(offerAmount);
+    const rate = Number.parseFloat(offerRate);
+    const duration = Number.parseInt(maxDuration);
+    const score = Number.parseInt(minScore);
 
-    if (amount <= 0 || rate <= 0 || duration <= 0 || score < 400 || score > 800) {
-      addToast("Por favor verifica que todos los campos sean válidos", "error")
-      return
+    if (
+      amount <= 0 ||
+      rate <= 0 ||
+      duration <= 0 ||
+      score < 400 ||
+      score > 800
+    ) {
+      addToast("Please verify that all fields are valid", "error");
+      return;
     }
 
     try {
@@ -40,16 +57,16 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
         interestRate: rate,
         maxDuration: duration,
         minCreditScore: score,
-      })
-      addToast("Oferta de préstamo creada exitosamente", "success")
-      setOfferAmount("")
-      setOfferRate("7.5")
-      setMaxDuration("30")
-      setMinScore("500")
-    } catch (error) {
-      addToast("Error al crear la oferta", "error")
+      });
+      addToast("Loan offer created successfully", "success");
+      setOfferAmount("");
+      setOfferRate("7.5");
+      setMaxDuration("30");
+      setMinScore("500");
+    } catch {
+      addToast("Error creating loan offer", "error");
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -60,21 +77,21 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <User className="h-4 w-4" />
-            Solicitudes
+            Requests
           </TabsTrigger>
           <TabsTrigger
             value="offer"
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <PlusCircle className="h-4 w-4" />
-            Crear Oferta
+            Create an offer
           </TabsTrigger>
           <TabsTrigger
             value="my-loans"
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <TrendingUp className="h-4 w-4" />
-            Mis Préstamos
+            My Loans
           </TabsTrigger>
         </TabsList>
 
@@ -88,16 +105,16 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-white">
                   <DollarSign className="h-5 w-5 text-blue-400" />
-                  Crear Oferta de Préstamo
+                  Create Loan Offer
                 </CardTitle>
                 <CardDescription className="text-gray-400">
-                  Define tus términos y condiciones para prestar
+                  Define your terms and conditions for lending
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="offer-amount" className="text-gray-300">
-                    Cantidad disponible (USDC)
+                    Available amount (USDC)
                   </Label>
                   <Input
                     id="offer-amount"
@@ -112,7 +129,7 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
 
                 <div className="space-y-2">
                   <Label htmlFor="offer-rate" className="text-gray-300">
-                    Tasa de interés anual (%)
+                    Annual interest rate (%)
                   </Label>
                   <Input
                     id="offer-rate"
@@ -127,7 +144,7 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
 
                 <div className="space-y-2">
                   <Label htmlFor="max-duration" className="text-gray-300">
-                    Duración máxima (días)
+                    Maximum duration (days)
                   </Label>
                   <Input
                     id="max-duration"
@@ -141,7 +158,7 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
 
                 <div className="space-y-2">
                   <Label htmlFor="min-score" className="text-gray-300">
-                    Score mínimo requerido (400-800)
+                    Minimum required score (400-800)
                   </Label>
                   <Input
                     id="min-score"
@@ -164,10 +181,10 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creando Oferta...
+                      Creating Offer...
                     </>
                   ) : (
-                    "Crear Oferta"
+                    "Create Offer"
                   )}
                 </Button>
               </CardContent>
@@ -178,48 +195,64 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-white">
                     <TrendingUp className="h-5 w-5 text-emerald-400" />
-                    Estadísticas del Mercado
+                    Market Statistics
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="text-center p-3 bg-blue-950/30 border border-blue-400/30 rounded-lg">
-                      <div className="text-2xl font-bold text-blue-400">7.2%</div>
-                      <div className="text-sm text-gray-400">APR Promedio</div>
+                      <div className="text-2xl font-bold text-blue-400">
+                        7.2%
+                      </div>
+                      <div className="text-sm text-gray-400">Average APR</div>
                     </div>
                     <div className="text-center p-3 bg-emerald-950/30 border border-emerald-400/30 rounded-lg">
-                      <div className="text-2xl font-bold text-emerald-400">94%</div>
-                      <div className="text-sm text-gray-400">Tasa de Repago</div>
+                      <div className="text-2xl font-bold text-emerald-400">
+                        94%
+                      </div>
+                      <div className="text-sm text-gray-400">
+                        Repayment Rate
+                      </div>
                     </div>
                   </div>
 
                   <div className="text-center p-3 bg-purple-950/30 border border-purple-400/30 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-400">$2.4M</div>
-                    <div className="text-sm text-gray-400">Volumen Total</div>
+                    <div className="text-2xl font-bold text-purple-400">
+                      $2.4M
+                    </div>
+                    <div className="text-sm text-gray-400">Total Volume</div>
                   </div>
                 </CardContent>
               </Card>
 
               <Card className="bg-blue-900/20 border-blue-500/30">
                 <CardHeader>
-                  <CardTitle className="text-white">Consejos para Lenders</CardTitle>
+                  <CardTitle className="text-white">Lender Tips</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-blue-400 rounded-full mt-2"></div>
-                    <span className="text-gray-300">Diversifica entre múltiples borrowers para reducir riesgo</span>
+                    <span className="text-gray-300">
+                      Diversify among multiple borrowers to reduce risk
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-blue-400 rounded-full mt-2"></div>
-                    <span className="text-gray-300">Considera la duración vs. la tasa de interés</span>
+                    <span className="text-gray-300">
+                      Consider duration vs. interest rate
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-blue-400 rounded-full mt-2"></div>
-                    <span className="text-gray-300">Borrowers con mayor score tienen menor riesgo de default</span>
+                    <span className="text-gray-300">
+                      Borrowers with higher scores have lower default risk
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-blue-400 rounded-full mt-2"></div>
-                    <span className="text-gray-300">Revisa el colateral y LTV antes de financiar</span>
+                    <span className="text-gray-300">
+                      Review collateral and LTV before financing
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -232,5 +265,5 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

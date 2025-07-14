@@ -1,55 +1,75 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Calculator, AlertTriangle, CheckCircle, Percent, Loader2, TrendingUp, DollarSign } from "lucide-react"
-import { getCreditTier, calculateCollateral, formatCurrency, formatPercentage } from "@/shared//utils/credit"
-import { AvailableLoansTable } from "./available-loans-table"
-import { MyLoansTable } from "./my-loans-table"
-import { useLending } from "@/shared/contexts/lending-context"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Calculator,
+  AlertTriangle,
+  CheckCircle,
+  Percent,
+  Loader2,
+  TrendingUp,
+  DollarSign,
+} from "lucide-react";
+import {
+  getCreditTier,
+  calculateCollateral,
+  formatCurrency,
+  formatPercentage,
+} from "@/shared//utils/credit";
+import { AvailableLoansTable } from "./available-loans-table";
+import { MyLoansTable } from "./my-loans-table";
+import { useLending } from "@/shared/contexts/lending-context";
 
 interface BorrowerInterfaceProps {
-  addToast: (message: string, type: "success" | "error" | "info") => void
+  addToast: (message: string, type: "success" | "error" | "info") => void;
 }
 
 export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
-  const { user, createLoanRequest, isLoading } = useLending()
-  const [amountUSDC, setAmountUSDC] = useState<string>("")
-  const [duration, setDuration] = useState<string>("30")
-  const xlmPrice = 0.12 // Precio simulado de XLM en USD
+  const { user, createLoanRequest, isLoading } = useLending();
+  const [amountUSDC, setAmountUSDC] = useState<string>("");
+  const [duration, setDuration] = useState<string>("30");
+  const xlmPrice = 0.12; // Precio simulado de XLM en USD
 
-  const creditInfo = getCreditTier(user.creditScore)
-  const amount = Number.parseFloat(amountUSDC) || 0
-  const requiredCollateral = amount > 0 ? calculateCollateral(amount, creditInfo.ltv, xlmPrice) : 0
-  const collateralValue = requiredCollateral * xlmPrice
+  const creditInfo = getCreditTier(user.creditScore);
+  const amount = Number.parseFloat(amountUSDC) || 0;
+  const requiredCollateral =
+    amount > 0 ? calculateCollateral(amount, creditInfo.ltv, xlmPrice) : 0;
+  const collateralValue = requiredCollateral * xlmPrice;
 
   const handleSubmitLoan = async () => {
     if (amount <= 0) {
-      addToast("Por favor ingresa una cantidad válida", "error")
-      return
+      addToast("Please enter a valid amount", "error");
+      return;
     }
 
     if (Number.parseInt(duration) <= 0) {
-      addToast("Por favor ingresa una duración válida", "error")
-      return
+      addToast("Please enter a valid duration", "error");
+      return;
     }
 
     try {
-      await createLoanRequest(amount, Number.parseInt(duration))
-      addToast("Solicitud de préstamo creada exitosamente", "success")
-      setAmountUSDC("")
-      setDuration("30")
-    } catch (error) {
-      addToast("Error al crear la solicitud de préstamo", "error")
+      await createLoanRequest(amount, Number.parseInt(duration));
+      addToast("Loan request created successfully", "success");
+      setAmountUSDC("");
+      setDuration("30");
+    } catch {
+      addToast("Error creating loan request", "error");
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -60,21 +80,21 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <Calculator className="h-4 w-4" />
-            Solicitar Préstamo
+            Request Loan
           </TabsTrigger>
           <TabsTrigger
             value="available"
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <DollarSign className="h-4 w-4" />
-            Préstamos Disponibles
+            Available Loans
           </TabsTrigger>
           <TabsTrigger
             value="my-loans"
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <TrendingUp className="h-4 w-4" />
-            Mis Préstamos
+            My Loans
           </TabsTrigger>
         </TabsList>
 
@@ -85,17 +105,18 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-white">
                   <Calculator className="h-5 w-5 text-blue-400" />
-                  Solicitar Préstamo
+                  Request Loan
                 </CardTitle>
                 <CardDescription className="text-gray-400">
-                  Con tu score de {user.creditScore}, puedes pedir hasta {creditInfo.ltv}% LTV con{" "}
+                  With your credit score of {user.creditScore}, you can request
+                  up to {creditInfo.ltv}% LTV with{" "}
                   {formatPercentage(creditInfo.apr)} APR
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="amount" className="text-gray-300">
-                    Cantidad a pedir (USDC)
+                    Amount to request (USDC)
                   </Label>
                   <Input
                     id="amount"
@@ -110,7 +131,7 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
 
                 <div className="space-y-2">
                   <Label htmlFor="duration" className="text-gray-300">
-                    Duración (días)
+                    Duration (days)
                   </Label>
                   <Input
                     id="duration"
@@ -126,39 +147,54 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
 
                 {amount > 0 && (
                   <div className="space-y-3">
-                    <h4 className="font-semibold text-white">Resumen del Préstamo</h4>
+                    <h4 className="font-semibold text-white">Loan Summary</h4>
 
                     <div className="bg-blue-950/30 border border-blue-400/30 p-4 rounded-lg space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-gray-300">Cantidad solicitada:</span>
-                        <span className="font-semibold text-white">{formatCurrency(amount)}</span>
+                        <span className="text-gray-300">Amount requested:</span>
+                        <span className="font-semibold text-white">
+                          {formatCurrency(amount)}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-300">Tu LTV permitido:</span>
-                        <Badge className={`${creditInfo.color} ${creditInfo.bgColor} border`}>{creditInfo.ltv}%</Badge>
+                        <span className="text-gray-300">Your allowed LTV:</span>
+                        <Badge
+                          className={`${creditInfo.color} ${creditInfo.bgColor} border`}
+                        >
+                          {creditInfo.ltv}%
+                        </Badge>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-300">APR estimado:</span>
+                        <span className="text-gray-300">Estimated APR:</span>
                         <div className="flex items-center gap-1">
                           <Percent className="h-3 w-3 text-emerald-400" />
-                          <span className="font-semibold text-emerald-400">{formatPercentage(creditInfo.apr)}</span>
+                          <span className="font-semibold text-emerald-400">
+                            {formatPercentage(creditInfo.apr)}
+                          </span>
                         </div>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-300">Colateral requerido:</span>
-                        <span className="font-semibold text-white">{requiredCollateral.toFixed(2)} XLM</span>
+                        <span className="text-gray-300">
+                          Required collateral:
+                        </span>
+                        <span className="font-semibold text-white">
+                          {requiredCollateral.toFixed(2)} XLM
+                        </span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">Valor del colateral:</span>
-                        <span className="text-gray-400">${collateralValue.toFixed(2)}</span>
+                        <span className="text-gray-400">Collateral value:</span>
+                        <span className="text-gray-400">
+                          ${collateralValue.toFixed(2)}
+                        </span>
                       </div>
                     </div>
 
                     <Alert className="bg-yellow-900/20 border-yellow-500/30">
                       <AlertTriangle className="h-4 w-4 text-yellow-400" />
                       <AlertDescription className="text-yellow-200">
-                        Tu colateral será bloqueado hasta que repagues el préstamo. Si el precio de XLM cae
-                        significativamente, podrías ser liquidado.
+                        Your collateral will be locked until you repay the loan.
+                        If the XLM price drops significantly, you could be
+                        liquidated.
                       </AlertDescription>
                     </Alert>
 
@@ -171,10 +207,10 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                       {isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Creando Solicitud...
+                          Creating Loan Request...
                         </>
                       ) : (
-                        "Solicitar Préstamo"
+                        "Request Loan"
                       )}
                     </Button>
                   </div>
@@ -182,48 +218,76 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
               </CardContent>
             </Card>
 
-            {/* Información y Niveles de Score */}
+            {/* Information and Score Levels */}
             <div className="space-y-4">
               <Card className="bg-blue-900/20 border-blue-500/30">
                 <CardHeader>
-                  <CardTitle className="text-white">Niveles de Credit Score</CardTitle>
-                  <CardDescription className="text-gray-400">Rango: 400 - 800 puntos</CardDescription>
+                  <CardTitle className="text-white">
+                    Credit Score Levels
+                  </CardTitle>
+                  <CardDescription className="text-gray-400">
+                    Range: 400 - 800 points
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-3 bg-red-900/20 border border-red-500/30 rounded">
                       <div>
-                        <span className="text-sm text-white">400 - 500 (Bajo)</span>
+                        <span className="text-sm text-white">
+                          400 - 500 (Low)
+                        </span>
                         <div className="text-xs text-red-400">APR: ~9.0%</div>
                       </div>
-                      <Badge variant="outline" className="text-red-400 border-red-500">
+                      <Badge
+                        variant="outline"
+                        className="text-red-400 border-red-500"
+                      >
                         LTV 50%
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-yellow-900/20 border border-yellow-500/30 rounded">
                       <div>
-                        <span className="text-sm text-white">500 - 600 (Medio)</span>
-                        <div className="text-xs text-yellow-400">APR: ~8.0%</div>
+                        <span className="text-sm text-white">
+                          500 - 600 (Medium)
+                        </span>
+                        <div className="text-xs text-yellow-400">
+                          APR: ~8.0%
+                        </div>
                       </div>
-                      <Badge variant="outline" className="text-yellow-400 border-yellow-500">
+                      <Badge
+                        variant="outline"
+                        className="text-yellow-400 border-yellow-500"
+                      >
                         LTV 60%
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-blue-900/20 border border-blue-500/30 rounded">
                       <div>
-                        <span className="text-sm text-white">600 - 700 (Medio-Alto)</span>
+                        <span className="text-sm text-white">
+                          600 - 700 (Medium-High)
+                        </span>
                         <div className="text-xs text-blue-400">APR: ~7.0%</div>
                       </div>
-                      <Badge variant="outline" className="text-blue-400 border-blue-500">
+                      <Badge
+                        variant="outline"
+                        className="text-blue-400 border-blue-500"
+                      >
                         LTV 70%
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-emerald-900/20 border border-emerald-500/30 rounded">
                       <div>
-                        <span className="text-sm text-white">700 - 800 (Alto)</span>
-                        <div className="text-xs text-emerald-400">APR: ~6.0%</div>
+                        <span className="text-sm text-white">
+                          700 - 800 (High)
+                        </span>
+                        <div className="text-xs text-emerald-400">
+                          APR: ~6.0%
+                        </div>
                       </div>
-                      <Badge variant="outline" className="text-emerald-400 border-emerald-500">
+                      <Badge
+                        variant="outline"
+                        className="text-emerald-400 border-emerald-500"
+                      >
                         LTV 80%
                       </Badge>
                     </div>
@@ -233,7 +297,7 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
 
               <Card className="bg-blue-900/20 border-blue-500/30">
                 <CardHeader>
-                  <CardTitle className="text-white">Cómo Funciona</CardTitle>
+                  <CardTitle className="text-white">How It Works</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-start gap-3">
@@ -241,8 +305,12 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                       <span className="text-white font-bold text-sm">1</span>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-white">Solicita tu préstamo</h4>
-                      <p className="text-sm text-gray-400">Ingresa la cantidad en USDC que necesitas</p>
+                      <h4 className="font-semibold text-white">
+                        Request your loan
+                      </h4>
+                      <p className="text-sm text-gray-400">
+                        Enter the amount in USDC you need
+                      </p>
                     </div>
                   </div>
 
@@ -251,8 +319,12 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                       <span className="text-white font-bold text-sm">2</span>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-white">Deposita colateral</h4>
-                      <p className="text-sm text-gray-400">Bloquea XLM según tu LTV permitido</p>
+                      <h4 className="font-semibold text-white">
+                        Lock XLM according to your allowed LTV
+                      </h4>
+                      <p className="text-sm text-gray-400">
+                        Lock XLM according to your allowed LTV
+                      </p>
                     </div>
                   </div>
 
@@ -261,8 +333,12 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                       <span className="text-white font-bold text-sm">3</span>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-white">Espera financiación</h4>
-                      <p className="text-sm text-gray-400">Los lenders verán tu solicitud y podrán financiarla</p>
+                      <h4 className="font-semibold text-white">
+                        Wait for funding
+                      </h4>
+                      <p className="text-sm text-gray-400">
+                        Lenders will see your request and can fund it
+                      </p>
                     </div>
                   </div>
 
@@ -271,8 +347,10 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                       <CheckCircle className="h-4 w-4 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-white">Recibe USDC</h4>
-                      <p className="text-sm text-gray-400">Una vez financiado, recibes los USDC en tu wallet</p>
+                      <h4 className="font-semibold text-white">Receive USDC</h4>
+                      <p className="text-sm text-gray-400">
+                        Once funded, you receive the USDC in your wallet
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -290,5 +368,5 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

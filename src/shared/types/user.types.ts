@@ -13,7 +13,14 @@ export interface User {
   reputation?: number;
   lastCreditScoreUpdate?: string;
   creditScoreDetails?: CreditScore;
-  [key: string]: string | number | boolean | undefined | LendingTransaction[] | BorrowingTransaction[] | CreditScore;
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | undefined
+    | LendingTransaction[]
+    | BorrowingTransaction[]
+    | CreditScore;
 }
 
 export type UserRole = "borrower" | "lender" | "both";

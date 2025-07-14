@@ -26,14 +26,14 @@ export default function WalletInfo() {
       {isAuthenticated && user && (
         <div className="mt-3 pt-3 border-t border-blue-200 dark:border-blue-700">
           <p className="text-xs text-blue-600 dark:text-blue-300">
-            <strong>Usuario:</strong> {user.name}
+            <strong>User:</strong> {user.name}
           </p>
           <p className="text-xs text-blue-600 dark:text-blue-300">
             <strong>Email:</strong> {user.email}
           </p>
           {user.createdAt && (
             <p className="text-xs text-blue-500 dark:text-blue-400">
-              <strong>Registrado:</strong>{" "}
+              <strong>Registered:</strong>{" "}
               {new Date(user.createdAt).toLocaleDateString()}
             </p>
           )}

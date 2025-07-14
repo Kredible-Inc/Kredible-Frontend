@@ -3,11 +3,11 @@ import { useUserStore } from "@/shared/stores/userStore";
 import { User } from "@/shared/types/user.types";
 import { UserService } from "@/shared/services/userService";
 
-// Variable global para almacenar la función resolve
+// Global variable to store the resolve function
 let resolveUserInfo: ((value: { name: string; email: string }) => void) | null =
   null;
 
-// Este puede ejecutarse después de conectar la wallet
+// This can be executed after connecting the wallet
 export const handleWalletAuth = async (walletAddress: string) => {
   try {
     // Check if user exists
@@ -15,7 +15,7 @@ export const handleWalletAuth = async (walletAddress: string) => {
       await UserService.getUserByWalletAddress(walletAddress);
 
     if (existingUser) {
-      // Usuario existe, hacer login
+      // User exists, do login
       useAuthStore.getState().login(existingUser);
       useUserStore.getState().setUser(existingUser);
 
@@ -52,13 +52,13 @@ export const handleWalletAuth = async (walletAddress: string) => {
   }
 };
 
-// Función para obtener información del usuario (modal)
+// Function to get user information (modal)
 export const promptUserForInfo = (): Promise<{
   name: string;
   email: string;
 }> => {
   return new Promise((resolve) => {
-    // Guardar la función resolve
+    // Save the resolve function
     resolveUserInfo = resolve;
 
     // Crear un evento personalizado para abrir el modal
@@ -67,7 +67,7 @@ export const promptUserForInfo = (): Promise<{
   });
 };
 
-// Función para resolver la promesa cuando se envía el formulario
+// Function to resolve the promise when the form is submitted
 export const resolveUserInfoPromise = (userData: {
   name: string;
   email: string;
@@ -78,7 +78,7 @@ export const resolveUserInfoPromise = (userData: {
   }
 };
 
-// Función para actualizar datos del usuario en Firestore
+// Function to update user data in Firestore
 export const updateUserInFirestore = async (
   userId: string,
   updates: Partial<User>,
@@ -101,7 +101,7 @@ export const updateUserInFirestore = async (
   }
 };
 
-// Función para obtener usuario por wallet address
+// Function to get user by wallet address
 export const getUserByWalletAddress = async (
   walletAddress: string,
 ): Promise<User | null> => {

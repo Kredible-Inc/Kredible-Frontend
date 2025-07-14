@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useAuthStore } from "@/shared/stores/authStore";
 import { useWallet } from "@/shared/hooks/useWallet";
 import ConnectWallet from "./ConnectWallet";
-import { useDashboard } from "@/shared/contexts/DashboardContext";
 import { Button } from "@/components/ui/button";
-import { User, TrendingUp, DollarSign } from "lucide-react";
+import { User, TrendingUp, DollarSign, Shield } from "lucide-react";
 import AccountInfoDialog from "./AccountInfoDialog";
 import { ThemeToggle } from "./ThemeToggle";
+import { useDashboard } from "@/shared/contexts/DashboardContext";
 
 export default function Navbar() {
   const { user, isAuthenticated } = useAuthStore();
@@ -18,7 +18,7 @@ export default function Navbar() {
 
   if (!isConnected || !isAuthenticated || !user) {
     return (
-      <nav className="bg-[#0F1224]/80 backdrop-blur-sm border-b border-[#0B0A0B] p-4">
+      <nav className="bg-black backdrop-blur-sm border-b border-[#0B0A0B] p-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h1 className="text-2xl font-bold text-white">Kredible</h1>
           <ConnectWallet />
@@ -28,37 +28,53 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-[#0F1224]/80 backdrop-blur-sm border-b border-[#0B0A0B] p-4">
+    <nav className="bg-black mb-[7rem] backdrop-blur-sm border-b border-white p-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-bold text-white">Kredible</h1>
 
-          <div className="flex items-center bg-[#0B0A0B] rounded-lg p-1 ml-8">
+          {/* Navigation Tabs */}
+          <div className="flex items-center gap-2 ml-8">
             <Button
               variant={activeTab === "loans" ? "default" : "ghost"}
               size="sm"
               onClick={() => setActiveTab("loans")}
               className={`flex items-center gap-2 ${
                 activeTab === "loans"
-                  ? "bg-blue-600 text-white hover:bg-blue-700"
-                  : "text-gray-400 hover:text-white hover:bg-gray-700"
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-300 hover:text-white hover:bg-gray-700"
               }`}
             >
               <DollarSign className="w-4 h-4" />
-              Loans
+              Lending
             </Button>
+
             <Button
               variant={activeTab === "borrows" ? "default" : "ghost"}
               size="sm"
               onClick={() => setActiveTab("borrows")}
               className={`flex items-center gap-2 ${
                 activeTab === "borrows"
-                  ? "bg-green-600 text-white hover:bg-green-700"
-                  : "text-gray-400 hover:text-white hover:bg-gray-700"
+                  ? "bg-green-600 text-white"
+                  : "text-gray-300 hover:text-white hover:bg-gray-700"
+              }`}
+            >
+              <Shield className="w-4 h-4" />
+              Borrowing
+            </Button>
+
+            <Button
+              variant={activeTab === "credit-score" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setActiveTab("credit-score")}
+              className={`flex items-center gap-2 ${
+                activeTab === "credit-score"
+                  ? "bg-purple-600 text-white"
+                  : "text-gray-300 hover:text-white hover:bg-gray-700"
               }`}
             >
               <TrendingUp className="w-4 h-4" />
-              Borrows
+              Credit Score
             </Button>
           </div>
         </div>
