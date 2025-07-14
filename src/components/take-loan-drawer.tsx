@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DollarSign,
@@ -25,33 +24,23 @@ import {
   Loader2,
 } from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/shared/utils/credit";
-import { LoanRequest } from "@/shared/types/lending";
+import { AvailableLoan } from "@/shared/types/lending";
 import { useLending } from "@/shared/contexts/lending-context";
 
-interface FundLoanDrawerProps {
-  loanRequest: LoanRequest;
+interface TakeLoanDrawerProps {
+  loan: AvailableLoan;
   addToast: (message: string, type: "success" | "error") => void;
   children: React.ReactNode;
 }
 
-export function FundLoanDrawer({
-  loanRequest,
+export function TakeLoanDrawer({
+  loan,
   addToast,
   children,
-}: FundLoanDrawerProps) {
+}: TakeLoanDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
-  const { fundLoan } = useLending();
-
-  const calculatePotentialReturn = (
-    amount: number,
-    apr: number,
-    duration: number,
-  ) => {
-    const dailyRate = apr / 100 / 365;
-    const totalReturn = amount * dailyRate * duration;
-    return totalReturn;
-  };
+  const { takeLoan, user } = useLending();
 
   const getRiskLevel = (score: number) => {
     if (score >= 700)
@@ -79,29 +68,24 @@ export function FundLoanDrawer({
     };
   };
 
-  const handleConfirmFunding = async () => {
+  const handleConfirmTakeLoan = async () => {
     setIsConfirming(true);
     try {
-      await fundLoan(loanRequest.id);
+      await takeLoan(loan.id);
       addToast(
-        "Loan funded successfully! Check 'My Loans' to track your investment.",
+        "Loan taken successfully! Check 'My Loans' to track your loan.",
         "success",
       );
       setIsOpen(false);
     } catch (error) {
-      console.error("Error funding loan:", error);
-      addToast("Error funding loan. Please try again.", "error");
+      console.error("Error taking loan:", error);
+      addToast("Error taking loan. Please try again.", "error");
     } finally {
       setIsConfirming(false);
     }
   };
 
-  const potentialReturn = calculatePotentialReturn(
-    loanRequest.amountUSDC,
-    loanRequest.apr,
-    loanRequest.duration,
-  );
-  const riskInfo = getRiskLevel(loanRequest.borrowerScore);
+  const riskInfo = getRiskLevel(loan.minCreditScore);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -109,35 +93,35 @@ export function FundLoanDrawer({
       <SheetContent className="bg-[#0F1224] border-l border-[#0B0A0B] w-[400px] sm:w-[540px] overflow-y-auto">
         <SheetHeader className="mb-6">
           <SheetTitle className="text-white flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-emerald-400" />
-            Fund Loan Request
+            <DollarSign className="h-5 w-5 text-blue-400" />
+            Take Loan
           </SheetTitle>
           <SheetDescription className="text-gray-400">
-            Review the loan details and confirm your investment
+            Review the loan details and confirm to take this loan
           </SheetDescription>
         </SheetHeader>
 
         <div className="space-y-6">
-          {/* Borrower Information */}
+          {/* Lender Information */}
           <Card className="bg-blue-900/20 border-blue-500/30">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <User className="h-5 w-5 text-blue-400" />
-                Borrower Information
+                Lender Information
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Wallet Address</span>
                 <span className="font-mono text-sm text-white">
-                  {loanRequest.borrower}
+                  {loan.lender}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-400">Credit Score</span>
+                <span className="text-gray-400">Min Credit Score</span>
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-white">
-                    {loanRequest.borrowerScore}
+                    {loan.minCreditScore}
                   </span>
                   <Badge className={riskInfo.bgColor}>
                     <span className={riskInfo.color}>
@@ -164,115 +148,35 @@ export function FundLoanDrawer({
                   <div>
                     <p className="text-sm text-gray-400">Amount</p>
                     <p className="font-semibold text-white">
-                      {formatCurrency(loanRequest.amountUSDC)}
+                      {formatCurrency(loan.amountUSDC)}
                     </p>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <Percent className="w-4 h-4 text-blue-400" />
                   <div>
                     <p className="text-sm text-gray-400">APR</p>
                     <p className="font-semibold text-white">
-                      {formatPercentage(loanRequest.apr)}
+                      {formatPercentage(loan.apr)}
                     </p>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-purple-400" />
                   <div>
                     <p className="text-sm text-gray-400">Duration</p>
                     <p className="font-semibold text-white">
-                      {loanRequest.duration} days
+                      {loan.duration} days
                     </p>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <Shield className="w-4 h-4 text-orange-400" />
                   <div>
-                    <p className="text-sm text-gray-400">LTV</p>
-                    <p className="font-semibold text-white">
-                      {loanRequest.ltv}%
-                    </p>
+                    <p className="text-sm text-gray-400">Max LTV</p>
+                    <p className="font-semibold text-white">{loan.maxLTV}%</p>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Collateral Information */}
-          <Card className="bg-purple-900/20 border-purple-500/30">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Shield className="h-5 w-5 text-purple-400" />
-                Collateral Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">XLM Collateral</span>
-                <span className="font-semibold text-white">
-                  {loanRequest.collateralXLM.toFixed(2)} XLM
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Collateral Value</span>
-                <span className="font-semibold text-white">
-                  ~${(loanRequest.collateralXLM * 0.12).toFixed(2)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Collateral Ratio</span>
-                <span className="font-semibold text-white">
-                  {(
-                    ((loanRequest.collateralXLM * 0.12) /
-                      loanRequest.amountUSDC) *
-                    100
-                  ).toFixed(1)}
-                  %
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Investment Summary */}
-          <Card className="bg-yellow-900/20 border-yellow-500/30">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-yellow-400" />
-                Your Investment Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Investment Amount</span>
-                <span className="font-semibold text-white">
-                  {formatCurrency(loanRequest.amountUSDC)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Expected Return</span>
-                <span className="font-semibold text-emerald-400">
-                  +{formatCurrency(potentialReturn)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">ROI</span>
-                <span className="font-semibold text-emerald-400">
-                  {((potentialReturn / loanRequest.amountUSDC) * 100).toFixed(
-                    2,
-                  )}
-                  %
-                </span>
-              </div>
-              <Separator className="bg-yellow-500/30" />
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Total Return</span>
-                <span className="font-semibold text-white">
-                  {formatCurrency(loanRequest.amountUSDC + potentialReturn)}
-                </span>
               </div>
             </CardContent>
           </Card>
@@ -284,13 +188,12 @@ export function FundLoanDrawer({
                 <AlertTriangle className="h-5 w-5 text-red-400 mt-0.5" />
                 <div className="space-y-2">
                   <h4 className="font-semibold text-red-400">
-                    Investment Risk Warning
+                    Loan Risk Warning
                   </h4>
                   <p className="text-sm text-gray-300">
-                    This is a peer-to-peer lending investment. Returns are not
-                    guaranteed and you may lose your investment if the borrower
-                    defaults. The collateral provides some protection but may
-                    not cover the full amount in case of XLM price volatility.
+                    This is a peer-to-peer loan. You are responsible for
+                    repayment and collateral. Defaulting may result in loss of
+                    collateral and negative credit impact.
                   </p>
                 </div>
               </div>
@@ -307,9 +210,9 @@ export function FundLoanDrawer({
               Cancel
             </Button>
             <Button
-              onClick={handleConfirmFunding}
+              onClick={handleConfirmTakeLoan}
               disabled={isConfirming}
-              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
             >
               {isConfirming ? (
                 <>
@@ -319,7 +222,7 @@ export function FundLoanDrawer({
               ) : (
                 <>
                   <CheckCircle className="w-4 h-4 mr-2" />
-                  Confirm Funding
+                  Confirm Loan
                 </>
               )}
             </Button>

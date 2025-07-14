@@ -1,16 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Shield, TrendingUp, User, DollarSign, Loader2, CheckCircle } from "lucide-react";
+import {
+  Clock,
+  Shield,
+  TrendingUp,
+  User,
+  DollarSign,
+  Loader2,
+  CheckCircle,
+} from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/shared/utils/credit";
 import { useLending } from "@/shared/contexts/lending-context";
 import { AvailableLoan } from "@/shared/types/lending";
+import { TakeLoanDrawer } from "./take-loan-drawer";
 
 interface AvailableLoansTableProps {
   addToast: (message: string, type: "success" | "error") => void;
@@ -22,7 +28,10 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
 
   const handleTakeLoan = async (loan: AvailableLoan) => {
     if (user.creditScore < loan.minCreditScore) {
-      addToast(`Your credit score (${user.creditScore}) is below the minimum required (${loan.minCreditScore})`, "error");
+      addToast(
+        `Your credit score (${user.creditScore}) is below the minimum required (${loan.minCreditScore})`,
+        "error",
+      );
       return;
     }
 
@@ -39,13 +48,30 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
   };
 
   const getRiskLevel = (creditScore: number) => {
-    if (creditScore >= 700) return { level: "Low", color: "bg-green-500/20 text-green-400 border-green-500/30" };
-    if (creditScore >= 600) return { level: "Medium", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" };
-    if (creditScore >= 500) return { level: "High", color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" };
-    return { level: "Very High", color: "bg-red-500/20 text-red-400 border-red-500/30" };
+    if (creditScore >= 700)
+      return {
+        level: "Low",
+        color: "bg-green-500/20 text-green-400 border-green-500/30",
+      };
+    if (creditScore >= 600)
+      return {
+        level: "Medium",
+        color: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+      };
+    if (creditScore >= 500)
+      return {
+        level: "High",
+        color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+      };
+    return {
+      level: "Very High",
+      color: "bg-red-500/20 text-red-400 border-red-500/30",
+    };
   };
 
-  const availableLoansFiltered = availableLoans.filter(loan => loan.status === "available");
+  const availableLoansFiltered = availableLoans.filter(
+    (loan) => loan.status === "available",
+  );
 
   if (isLoading) {
     return (
@@ -92,9 +118,12 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
           {availableLoansFiltered.map((loan) => {
             const riskInfo = getRiskLevel(loan.minCreditScore);
             const canTakeLoan = user.creditScore >= loan.minCreditScore;
-            
+
             return (
-              <Card key={loan.id} className="bg-[#0F1224] border-[#0B0A0B] hover:border-blue-500/30 transition-colors">
+              <Card
+                key={loan.id}
+                className="bg-[#0F1224] border-[#0B0A0B] hover:border-blue-500/30 transition-colors"
+              >
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -104,13 +133,17 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
                         </div>
                         <div>
                           <h4 className="font-semibold text-white">
-                            Lender: {loan.lender.slice(0, 6)}...{loan.lender.slice(-4)}
+                            Lender: {loan.lender.slice(0, 6)}...
+                            {loan.lender.slice(-4)}
                           </h4>
                           <div className="flex items-center gap-2 mt-1">
                             <Badge className={riskInfo.color}>
                               Risk: {riskInfo.level}
                             </Badge>
-                            <Badge variant="outline" className="border-gray-600 text-gray-400">
+                            <Badge
+                              variant="outline"
+                              className="border-gray-600 text-gray-400"
+                            >
                               Min Score: {loan.minCreditScore}
                             </Badge>
                           </div>
@@ -127,7 +160,7 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
                             </p>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                           <TrendingUp className="w-4 h-4 text-blue-400" />
                           <div>
@@ -137,7 +170,7 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
                             </p>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-purple-400" />
                           <div>
@@ -153,36 +186,43 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
                         <Shield className="w-4 h-4" />
                         <span>Max LTV: {loan.maxLTV}%</span>
                         <span>•</span>
-                        <span>Created: {loan.createdAt.toLocaleDateString()}</span>
+                        <span>
+                          Created: {loan.createdAt.toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
 
                     <div className="ml-6 flex flex-col items-end gap-3">
                       {canTakeLoan ? (
-                        <Button
-                          onClick={() => handleTakeLoan(loan)}
-                          disabled={processingLoan === loan.id}
-                          className="bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                          {processingLoan === loan.id ? (
-                            <>
-                              <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                              Processing...
-                            </>
-                          ) : (
-                            <>
-                              <CheckCircle className="w-4 h-4 mr-2" />
-                              Take Loan
-                            </>
-                          )}
-                        </Button>
+                        <TakeLoanDrawer loan={loan} addToast={addToast}>
+                          <Button
+                            disabled={processingLoan === loan.id}
+                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                          >
+                            {processingLoan === loan.id ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                Processing...
+                              </>
+                            ) : (
+                              <>
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                Take Loan
+                              </>
+                            )}
+                          </Button>
+                        </TakeLoanDrawer>
                       ) : (
                         <div className="text-center">
-                          <Badge variant="outline" className="border-red-500/30 text-red-400 mb-2">
+                          <Badge
+                            variant="outline"
+                            className="border-red-500/30 text-red-400 mb-2"
+                          >
                             Score too low
                           </Badge>
                           <p className="text-xs text-gray-500">
-                            Need {loan.minCreditScore - user.creditScore} more points
+                            Need {loan.minCreditScore - user.creditScore} more
+                            points
                           </p>
                         </div>
                       )}

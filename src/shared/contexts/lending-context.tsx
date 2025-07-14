@@ -184,7 +184,7 @@ export function LendingProvider({
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // Find the loan request
-      const loanRequest = loanRequests.find(loan => loan.id === loanId);
+      const loanRequest = loanRequests.find((loan) => loan.id === loanId);
       if (!loanRequest) {
         throw new Error("Loan request not found");
       }
@@ -205,10 +205,14 @@ export function LendingProvider({
         apr: loanRequest.apr,
         duration: loanRequest.duration,
         startDate: new Date(),
-        dueDate: new Date(Date.now() + loanRequest.duration * 24 * 60 * 60 * 1000),
+        dueDate: new Date(
+          Date.now() + loanRequest.duration * 24 * 60 * 60 * 1000,
+        ),
         status: "active",
         collateralXLM: loanRequest.collateralXLM,
-        interestEarned: (loanRequest.amountUSDC * loanRequest.apr / 100) * (loanRequest.duration / 365),
+        interestEarned:
+          ((loanRequest.amountUSDC * loanRequest.apr) / 100) *
+          (loanRequest.duration / 365),
         interestOwed: 0,
       };
 
@@ -231,7 +235,7 @@ export function LendingProvider({
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const loan = availableLoans.find(l => l.id === loanId);
+      const loan = availableLoans.find((l) => l.id === loanId);
       if (!loan) {
         throw new Error("Available loan not found");
       }
@@ -254,7 +258,8 @@ export function LendingProvider({
         dueDate: new Date(Date.now() + loan.duration * 24 * 60 * 60 * 1000),
         status: "active",
         interestEarned: 0,
-        interestOwed: (loan.amountUSDC * loan.apr / 100) * (loan.duration / 365),
+        interestOwed:
+          ((loan.amountUSDC * loan.apr) / 100) * (loan.duration / 365),
       };
 
       // Add to lending history (for borrowed loans too)

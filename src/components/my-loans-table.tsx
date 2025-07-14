@@ -10,7 +10,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Clock, Percent, Loader2, TrendingUp, TrendingDown } from "lucide-react";
+import {
+  Clock,
+  Percent,
+  Loader2,
+  TrendingUp,
+  TrendingDown,
+} from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/shared/utils/credit";
 import { useLending } from "@/shared/contexts/lending-context";
 
@@ -21,8 +27,10 @@ interface MyLoansTableProps {
 export function MyLoansTable({ addToast }: MyLoansTableProps) {
   const { lendingHistory, isLoading } = useLending();
 
-  const borrowedLoans = lendingHistory.filter(loan => loan.type === "borrowed");
-  const lentLoans = lendingHistory.filter(loan => loan.type === "lent");
+  const borrowedLoans = lendingHistory.filter(
+    (loan) => loan.type === "borrowed",
+  );
+  const lentLoans = lendingHistory.filter((loan) => loan.type === "lent");
 
   const handleRepayLoan = async () => {
     try {
@@ -119,13 +127,17 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
                         loan.status === "active"
                           ? "text-emerald-400 border-emerald-500"
                           : loan.status === "overdue"
-                          ? "text-red-400 border-red-500"
-                          : "text-gray-400 border-gray-500"
+                            ? "text-red-400 border-red-500"
+                            : "text-gray-400 border-gray-500"
                       }
                     >
-                      {loan.status === "active" ? "Active" : 
-                       loan.status === "overdue" ? "Overdue" : 
-                       loan.status === "repaid" ? "Repaid" : "Defaulted"}
+                      {loan.status === "active"
+                        ? "Active"
+                        : loan.status === "overdue"
+                          ? "Overdue"
+                          : loan.status === "repaid"
+                            ? "Repaid"
+                            : "Defaulted"}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -177,7 +189,9 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
         {lentLoans.length === 0 ? (
           <div className="text-center py-8">
             <TrendingUp className="h-12 w-12 text-gray-600 mx-auto mb-4" />
-            <div className="text-gray-400">You haven&apos;t lent any money yet</div>
+            <div className="text-gray-400">
+              You haven&apos;t lent any money yet
+            </div>
           </div>
         ) : (
           <Table>
@@ -231,13 +245,17 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
                         loan.status === "active"
                           ? "text-emerald-400 border-emerald-500"
                           : loan.status === "overdue"
-                          ? "text-red-400 border-red-500"
-                          : "text-gray-400 border-gray-500"
+                            ? "text-red-400 border-red-500"
+                            : "text-gray-400 border-gray-500"
                       }
                     >
-                      {loan.status === "active" ? "Active" : 
-                       loan.status === "overdue" ? "Overdue" : 
-                       loan.status === "repaid" ? "Repaid" : "Defaulted"}
+                      {loan.status === "active"
+                        ? "Active"
+                        : loan.status === "overdue"
+                          ? "Overdue"
+                          : loan.status === "repaid"
+                            ? "Repaid"
+                            : "Defaulted"}
                     </Badge>
                   </TableCell>
                   <TableCell>
