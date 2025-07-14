@@ -71,7 +71,9 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-white">{loan.borrowerName}</h4>
+                  <h4 className="font-medium text-white">
+                    {loan.borrowerName}
+                  </h4>
                   <p className="text-sm text-gray-400">
                     Amount: {formatCurrency(loan.amount)}
                   </p>

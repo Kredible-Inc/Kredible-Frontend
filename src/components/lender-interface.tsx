@@ -227,9 +227,7 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
 
               <Card className="bg-blue-900/20 border-blue-500/30">
                 <CardHeader>
-                  <CardTitle className="text-white">
-                    Lender Tips
-                  </CardTitle>
+                  <CardTitle className="text-white">Lender Tips</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
                   <div className="flex items-start gap-2">

@@ -108,9 +108,9 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                   Request Loan
                 </CardTitle>
                 <CardDescription className="text-gray-400">
-                  With your credit score of {user.creditScore}, you can request up to{" "}
-                  {creditInfo.ltv}% LTV with {formatPercentage(creditInfo.apr)}{" "}
-                  APR
+                  With your credit score of {user.creditScore}, you can request
+                  up to {creditInfo.ltv}% LTV with{" "}
+                  {formatPercentage(creditInfo.apr)} APR
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -147,15 +147,11 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
 
                 {amount > 0 && (
                   <div className="space-y-3">
-                    <h4 className="font-semibold text-white">
-                      Loan Summary
-                    </h4>
+                    <h4 className="font-semibold text-white">Loan Summary</h4>
 
                     <div className="bg-blue-950/30 border border-blue-400/30 p-4 rounded-lg space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-gray-300">
-                          Amount requested:
-                        </span>
+                        <span className="text-gray-300">Amount requested:</span>
                         <span className="font-semibold text-white">
                           {formatCurrency(amount)}
                         </span>
@@ -186,9 +182,7 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">
-                          Collateral value:
-                        </span>
+                        <span className="text-gray-400">Collateral value:</span>
                         <span className="text-gray-400">
                           ${collateralValue.toFixed(2)}
                         </span>
@@ -198,9 +192,9 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                     <Alert className="bg-yellow-900/20 border-yellow-500/30">
                       <AlertTriangle className="h-4 w-4 text-yellow-400" />
                       <AlertDescription className="text-yellow-200">
-                        Your collateral will be locked until you repay the
-                        loan. If the XLM price drops significantly,
-                        you could be liquidated.
+                        Your collateral will be locked until you repay the loan.
+                        If the XLM price drops significantly, you could be
+                        liquidated.
                       </AlertDescription>
                     </Alert>
 

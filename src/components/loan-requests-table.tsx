@@ -243,9 +243,7 @@ export function LoanRequestsTable({ addToast }: LoanRequestsTableProps) {
             <h3 className="text-lg font-semibold text-gray-400 mb-2">
               No loan requests available
             </h3>
-            <p className="text-gray-500">
-              New loan requests will appear here
-            </p>
+            <p className="text-gray-500">New loan requests will appear here</p>
           </div>
         )}
       </CardContent>

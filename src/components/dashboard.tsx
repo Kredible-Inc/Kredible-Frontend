@@ -3,7 +3,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DollarSign, Shield } from "lucide-react";
 import { CreditScoreCard } from "./credit-score-card";
-import { StatsGrid } from "./stats-grid";
 import { BorrowerInterface } from "./borrower-interface";
 import { LenderInterface } from "./lender-interface";
 import { ToastManager } from "./toast-notification";
@@ -42,7 +41,6 @@ export function Dashboard() {
                 Decentralized P2P lending with on-chain credit score
               </p>
             </div>
-
 
             {/* Credit Score Card */}
             <CreditScoreCard user={user} />

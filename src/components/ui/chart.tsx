@@ -1,12 +1,20 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Bar, BarChart, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import * as React from "react";
+import {
+  Bar,
+  BarChart,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 export interface ChartProps {
-  data: Array<{ name: string; total: number }>
-  type?: "line" | "bar"
-  className?: string
+  data: Array<{ name: string; total: number }>;
+  type?: "line" | "bar";
+  className?: string;
 }
 
 export function Chart({ data, type = "line" }: ChartProps) {
@@ -56,5 +64,5 @@ export function Chart({ data, type = "line" }: ChartProps) {
         </BarChart>
       )}
     </ResponsiveContainer>
-  )
+  );
 }

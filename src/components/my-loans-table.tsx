@@ -1,10 +1,20 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Clock, Percent, TrendingUp, TrendingDown, Loader2 } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Clock,
+  Percent,
+  Loader2,
+} from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/shared/utils/credit";
 import { useLending } from "@/shared/contexts/lending-context";
 
@@ -64,14 +74,20 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-white">My Borrowed Loans</h3>
-            <p className="text-sm text-gray-400">Loans you have taken from other users</p>
+            <h3 className="text-lg font-semibold text-white">
+              My Borrowed Loans
+            </h3>
+            <p className="text-sm text-gray-400">
+              Loans you have taken from other users
+            </p>
           </div>
         </div>
 
         {borrowedLoans.length === 0 ? (
           <div className="text-center py-8">
-            <div className="text-gray-400">You don&apos;t have any borrowed loans</div>
+            <div className="text-gray-400">
+              You don&apos;t have any borrowed loans
+            </div>
           </div>
         ) : (
           <Table>
@@ -159,7 +175,9 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-white">My Lent Loans</h3>
-            <p className="text-sm text-gray-400">Loans you have lent to other users</p>
+            <p className="text-sm text-gray-400">
+              Loans you have lent to other users
+            </p>
           </div>
         </div>
 

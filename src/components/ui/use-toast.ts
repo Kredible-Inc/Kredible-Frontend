@@ -23,11 +23,13 @@ interface State {
   toasts: ToasterToast[];
 }
 
-function toastReducer(state: State, action: 
-  | { type: "ADD_TOAST"; toast: ToasterToast }
-  | { type: "UPDATE_TOAST"; toast: Partial<ToasterToast> }
-  | { type: "DISMISS_TOAST"; toastId?: ToasterToast["id"] }
-  | { type: "REMOVE_TOAST"; toastId?: ToasterToast["id"] }
+function toastReducer(
+  state: State,
+  action:
+    | { type: "ADD_TOAST"; toast: ToasterToast }
+    | { type: "UPDATE_TOAST"; toast: Partial<ToasterToast> }
+    | { type: "DISMISS_TOAST"; toastId?: ToasterToast["id"] }
+    | { type: "REMOVE_TOAST"; toastId?: ToasterToast["id"] },
 ): State {
   switch (action.type) {
     case "ADD_TOAST":
@@ -39,7 +41,7 @@ function toastReducer(state: State, action:
       return {
         ...state,
         toasts: state.toasts.map((t) =>
-          t.id === action.toast.id ? { ...t, ...action.toast } : t
+          t.id === action.toast.id ? { ...t, ...action.toast } : t,
         ),
       };
     case "DISMISS_TOAST":
@@ -48,7 +50,7 @@ function toastReducer(state: State, action:
         toasts: state.toasts.map((t) =>
           t.id === action.toastId || action.toastId === undefined
             ? { ...t, open: false }
-            : t
+            : t,
         ),
       };
     case "REMOVE_TOAST":
@@ -65,11 +67,12 @@ const listeners: Array<(state: State) => void> = [];
 
 let memoryState: State = { toasts: [] };
 
-function dispatch(action: 
-  | { type: "ADD_TOAST"; toast: ToasterToast }
-  | { type: "UPDATE_TOAST"; toast: Partial<ToasterToast> }
-  | { type: "DISMISS_TOAST"; toastId?: ToasterToast["id"] }
-  | { type: "REMOVE_TOAST"; toastId?: ToasterToast["id"] }
+function dispatch(
+  action:
+    | { type: "ADD_TOAST"; toast: ToasterToast }
+    | { type: "UPDATE_TOAST"; toast: Partial<ToasterToast> }
+    | { type: "DISMISS_TOAST"; toastId?: ToasterToast["id"] }
+    | { type: "REMOVE_TOAST"; toastId?: ToasterToast["id"] },
 ) {
   memoryState = toastReducer(memoryState, action);
   listeners.forEach((listener) => {
