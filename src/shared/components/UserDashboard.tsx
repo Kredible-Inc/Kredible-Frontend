@@ -12,7 +12,7 @@ export default function UserDashboard() {
   const { user, isAuthenticated } = useAuthStore();
   const { isConnected } = useWallet();
 
-  // Si no está conectado, mostrar pantalla de conexión
+  // If not connected, show connection screen
   if (!isConnected) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0F1224] to-black flex items-center justify-center p-6">
@@ -27,7 +27,7 @@ export default function UserDashboard() {
     );
   }
 
-  // Si está conectado pero no autenticado, mostrar pantalla de bienvenida
+  // If connected but not authenticated, show welcome screen
   if (!isAuthenticated || !user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0F1224] to-black flex items-center justify-center p-6">
@@ -45,7 +45,7 @@ export default function UserDashboard() {
     );
   }
 
-  // Si está autenticado, mostrar dashboard principal
+  // If authenticated, show main dashboard
   return (
     <DashboardProvider>
       <div className="min-h-screen bg-gradient-to-br from-[#0F1224] to-black">

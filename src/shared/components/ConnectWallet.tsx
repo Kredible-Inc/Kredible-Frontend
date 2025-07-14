@@ -8,13 +8,8 @@ import { handleWalletAuth } from "@/shared/lib/auth";
 import { Wallet, Loader2 } from "lucide-react";
 
 export default function ConnectWallet() {
-  const {
-    address,
-    isConnecting,
-    isConnected,
-    connect,
-    formatAddress,
-  } = useWallet();
+  const { address, isConnecting, isConnected, connect, formatAddress } =
+    useWallet();
 
   const checkConnection = useWalletStore((state) => state.checkConnection);
   const { user, isAuthenticated } = useAuthStore();
@@ -44,7 +39,13 @@ export default function ConnectWallet() {
     if (isConnected && address && !isAuthenticated && !isProcessingAuth) {
       handleWalletConnection();
     }
-  }, [isConnected, address, isAuthenticated, isProcessingAuth, handleWalletConnection]);
+  }, [
+    isConnected,
+    address,
+    isAuthenticated,
+    isProcessingAuth,
+    handleWalletConnection,
+  ]);
 
   if (isAuthenticated && user && address) {
     return (
@@ -65,7 +66,7 @@ export default function ConnectWallet() {
           {formatAddress(address)}
         </span>
         <div className="text-sm text-yellow-300">
-          {isProcessingAuth ? "Verificando..." : "Wallet conectada"}
+          {isProcessingAuth ? "Verifying..." : "Wallet connected"}
         </div>
       </div>
     );

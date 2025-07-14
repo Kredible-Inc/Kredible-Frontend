@@ -1,41 +1,51 @@
-"use client"
+"use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react"
-import type { User, LoanRequest, AvailableLoan, LenderOffer } from "../types/lending"
+import { createContext, useContext, useState, type ReactNode } from "react";
+import type {
+  User,
+  LoanRequest,
+  AvailableLoan,
+  LenderOffer,
+} from "../types/lending";
 
 interface LendingContextType {
-  user: User
-  loanRequests: LoanRequest[]
-  availableLoans: AvailableLoan[]
-  lenderOffers: LenderOffer[]
-  isLoading: boolean
-  createLoanRequest: (amount: number, duration: number) => Promise<void>
-  fundLoan: (loanId: string) => Promise<void>
-  takeLoan: (loanId: string) => Promise<void>
-  createLenderOffer: (offer: Omit<LenderOffer, "id" | "lender">) => Promise<void>
-  updateUser: (updates: Partial<User>) => void
+  user: User;
+  loanRequests: LoanRequest[];
+  availableLoans: AvailableLoan[];
+  lenderOffers: LenderOffer[];
+  isLoading: boolean;
+  createLoanRequest: (amount: number, duration: number) => Promise<void>;
+  fundLoan: (loanId: string) => Promise<void>;
+  takeLoan: (loanId: string) => Promise<void>;
+  createLenderOffer: (
+    offer: Omit<LenderOffer, "id" | "lender">,
+  ) => Promise<void>;
+  updateUser: (updates: Partial<User>) => void;
 }
 
-const LendingContext = createContext<LendingContextType | undefined>(undefined)
+const LendingContext = createContext<LendingContextType | undefined>(undefined);
 
 export function useLending() {
-  const context = useContext(LendingContext)
+  const context = useContext(LendingContext);
   if (!context) {
-    throw new Error("useLending must be used within a LendingProvider")
+    throw new Error("useLending must be used within a LendingProvider");
   }
-  return context
+  return context;
 }
 
 interface LendingProviderProps {
-  children: ReactNode
-  initialUser: User
+  children: ReactNode;
+  initialUser: User;
 }
 
-export function LendingProvider({ children, initialUser }: LendingProviderProps) {
-  const [user, setUser] = useState<User>(initialUser)
-  const [isLoading, setIsLoading] = useState(false)
+export function LendingProvider({
+  children,
+  initialUser,
+}: LendingProviderProps) {
+  const [user, setUser] = useState<User>(initialUser);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Estados iniciales con datos simulados
+  // Initial states with simulated data
   const [loanRequests, setLoanRequests] = useState<LoanRequest[]>([
     {
       id: "1",
@@ -61,7 +71,7 @@ export function LendingProvider({ children, initialUser }: LendingProviderProps)
       status: "pending",
       createdAt: new Date("2024-01-14"),
     },
-  ])
+  ]);
 
   const [availableLoans, setAvailableLoans] = useState<AvailableLoan[]>([
     {
@@ -86,88 +96,96 @@ export function LendingProvider({ children, initialUser }: LendingProviderProps)
       status: "available",
       createdAt: new Date("2024-01-14"),
     },
-  ])
+  ]);
 
-  const [lenderOffers, setLenderOffers] = useState<LenderOffer[]>([])
+  const [lenderOffers, setLenderOffers] = useState<LenderOffer[]>([]);
 
   const createLoanRequest = async (amount: number, duration: number) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      // Simular delay de blockchain
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // Simulate blockchain delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const newRequest: LoanRequest = {
         id: Date.now().toString(),
         borrower: user.address,
         borrowerScore: user.creditScore,
         amountUSDC: amount,
-        collateralXLM: amount / (user.ltv / 100) / 0.12, // Precio XLM simulado
+        collateralXLM: amount / (user.ltv / 100) / 0.12, // Simulated XLM price
         ltv: user.ltv,
         apr: user.apr,
         duration,
         status: "pending",
         createdAt: new Date(),
-      }
+      };
 
-      setLoanRequests((prev) => [newRequest, ...prev])
+      setLoanRequests((prev) => [newRequest, ...prev]);
 
-      // Actualizar estadísticas del usuario
+      // Update user statistics
       setUser((prev) => ({
         ...prev,
         activeLoans: prev.activeLoans + 1,
-      }))
+      }));
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const fundLoan = async (loanId: string) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       setLoanRequests((prev) =>
-        prev.map((loan) => (loan.id === loanId ? { ...loan, status: "funded" as const } : loan)),
-      )
+        prev.map((loan) =>
+          loan.id === loanId ? { ...loan, status: "funded" as const } : loan,
+        ),
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const takeLoan = async (loanId: string) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       setAvailableLoans((prev) =>
-        prev.map((loan) => (loan.id === loanId ? { ...loan, status: "taken" as const } : loan)),
-      )
+        prev.map((loan) =>
+          loan.id === loanId ? { ...loan, status: "taken" as const } : loan,
+        ),
+      );
 
-      // Actualizar estadísticas del usuario
+      // Update user statistics
       setUser((prev) => ({
         ...prev,
         activeLoans: prev.activeLoans + 1,
-        totalBorrowed: prev.totalBorrowed + (availableLoans.find((l) => l.id === loanId)?.amountUSDC || 0),
-      }))
+        totalBorrowed:
+          prev.totalBorrowed +
+          (availableLoans.find((l) => l.id === loanId)?.amountUSDC || 0),
+      }));
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const createLenderOffer = async (offer: Omit<LenderOffer, "id" | "lender">) => {
-    setIsLoading(true)
+  const createLenderOffer = async (
+    offer: Omit<LenderOffer, "id" | "lender">,
+  ) => {
+    setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const newOffer: LenderOffer = {
         ...offer,
         id: Date.now().toString(),
         lender: user.address,
-      }
+      };
 
-      setLenderOffers((prev) => [newOffer, ...prev])
+      setLenderOffers((prev) => [newOffer, ...prev]);
 
-      // Agregar a préstamos disponibles
+      // Add to available loans
       const newAvailableLoan: AvailableLoan = {
         id: newOffer.id,
         lender: user.address,
@@ -175,20 +193,20 @@ export function LendingProvider({ children, initialUser }: LendingProviderProps)
         apr: offer.interestRate,
         duration: offer.maxDuration,
         minCreditScore: offer.minCreditScore,
-        maxLTV: 80, // Valor por defecto
+        maxLTV: 80, // Default value
         status: "available",
         createdAt: new Date(),
-      }
+      };
 
-      setAvailableLoans((prev) => [newAvailableLoan, ...prev])
+      setAvailableLoans((prev) => [newAvailableLoan, ...prev]);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const updateUser = (updates: Partial<User>) => {
-    setUser((prev) => ({ ...prev, ...updates }))
-  }
+    setUser((prev) => ({ ...prev, ...updates }));
+  };
 
   return (
     <LendingContext.Provider
@@ -207,5 +225,5 @@ export function LendingProvider({ children, initialUser }: LendingProviderProps)
     >
       {children}
     </LendingContext.Provider>
-  )
+  );
 }
