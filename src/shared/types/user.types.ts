@@ -11,10 +11,12 @@ export interface User {
   totalLent?: number;
   totalBorrowed?: number;
   reputation?: number;
-  [key: string]: any;
+  lastCreditScoreUpdate?: string;
+  creditScoreDetails?: CreditScore;
+  [key: string]: string | number | boolean | undefined | LendingTransaction[] | BorrowingTransaction[] | CreditScore;
 }
 
-export type UserRole = 'borrower' | 'lender' | 'both';
+export type UserRole = "borrower" | "lender" | "both";
 
 export interface CreditScore {
   score: number;
@@ -25,7 +27,7 @@ export interface CreditScore {
 
 export interface CreditFactor {
   name: string;
-  impact: 'positive' | 'negative' | 'neutral';
+  impact: "positive" | "negative" | "neutral";
   description: string;
   value: number;
 }
@@ -60,7 +62,12 @@ export interface BorrowingTransaction {
   ltvRatio?: number;
 }
 
-export type TransactionStatus = 'pending' | 'active' | 'completed' | 'defaulted' | 'cancelled';
+export type TransactionStatus =
+  | "pending"
+  | "active"
+  | "completed"
+  | "defaulted"
+  | "cancelled";
 
 export interface LoanRequest {
   id: string;
@@ -73,7 +80,7 @@ export interface LoanRequest {
   collateral?: string;
   ltvRatio?: number;
   createdAt: string;
-  status: 'open' | 'matched' | 'cancelled';
+  status: "open" | "matched" | "cancelled";
 }
 
 export interface LendingOffer {
@@ -86,5 +93,5 @@ export interface LendingOffer {
   maxTerm: number; // in days
   minCreditScore: number;
   createdAt: string;
-  status: 'active' | 'inactive';
-} 
+  status: "active" | "inactive";
+}

@@ -37,7 +37,9 @@ export default function AccountModal() {
           </div>
           <div>
             <label className="text-sm text-gray-300">Wallet Address</label>
-            <p className="text-white font-mono text-sm break-all">{user?.walletAddress}</p>
+            <p className="text-white font-mono text-sm break-all">
+              {user?.walletAddress}
+            </p>
           </div>
           <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#0B0A0B]">
             <div className="text-center">

@@ -1,17 +1,22 @@
 "use client";
 
-import { useState } from "react";
 import { useAuthStore } from "@/shared/stores/authStore";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { User } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface AccountInfoDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function AccountInfoDialog({ isOpen, onClose }: AccountInfoDialogProps) {
+export default function AccountInfoDialog({
+  isOpen,
+  onClose,
+}: AccountInfoDialogProps) {
   const { user } = useAuthStore();
 
   if (!user) return null;
@@ -33,17 +38,23 @@ export default function AccountInfoDialog({ isOpen, onClose }: AccountInfoDialog
           </div>
           <div>
             <label className="text-sm text-gray-300">Wallet Address</label>
-            <p className="text-white font-mono text-sm break-all">{user.walletAddress}</p>
+            <p className="text-white font-mono text-sm break-all">
+              {user.walletAddress}
+            </p>
           </div>
           <div>
             <label className="text-sm text-gray-300">Member Since</label>
             <p className="text-white font-medium">
-              {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}
+              {user.createdAt
+                ? new Date(user.createdAt).toLocaleDateString()
+                : "N/A"}
             </p>
           </div>
           <div>
             <label className="text-sm text-gray-300">User Role</label>
-            <p className="text-white font-medium capitalize">{user.userRole || "borrower"}</p>
+            <p className="text-white font-medium capitalize">
+              {user.userRole || "borrower"}
+            </p>
           </div>
           <div>
             <label className="text-sm text-gray-300">Reputation</label>
@@ -67,4 +78,4 @@ export default function AccountInfoDialog({ isOpen, onClose }: AccountInfoDialog
       </DialogContent>
     </Dialog>
   );
-} 
+}

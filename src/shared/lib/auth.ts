@@ -11,30 +11,31 @@ let resolveUserInfo: ((value: { name: string; email: string }) => void) | null =
 export const handleWalletAuth = async (walletAddress: string) => {
   try {
     // Check if user exists
-    const existingUser = await UserService.getUserByWalletAddress(walletAddress);
+    const existingUser =
+      await UserService.getUserByWalletAddress(walletAddress);
 
     if (existingUser) {
       // Usuario existe, hacer login
       useAuthStore.getState().login(existingUser);
       useUserStore.getState().setUser(existingUser);
-      
+
       return { success: true, isNewUser: false, user: existingUser };
     }
 
     // Si no existe, abrir formulario modal para pedir nombre y correo
     const { name, email } = await promptUserForInfo();
 
-    const newUser: Omit<User, 'id'> = {
+    const newUser: Omit<User, "id"> = {
       walletAddress,
       name,
       email,
       createdAt: new Date().toISOString(),
-      userRole: 'borrower', // Default role
+      userRole: "borrower", // Default role
       lendingHistory: [],
       borrowingHistory: [],
       totalLent: 0,
       totalBorrowed: 0,
-      reputation: 0
+      reputation: 0,
     };
 
     // Create user using UserService
@@ -43,7 +44,7 @@ export const handleWalletAuth = async (walletAddress: string) => {
     // Actualizar stores
     useAuthStore.getState().login(userWithId);
     useUserStore.getState().setUser(userWithId);
-    
+
     return { success: true, isNewUser: true, user: userWithId };
   } catch (error) {
     console.error("Error in handleWalletAuth:", error);
@@ -78,10 +79,13 @@ export const resolveUserInfoPromise = (userData: {
 };
 
 // Función para actualizar datos del usuario en Firestore
-export const updateUserInFirestore = async (userId: string, updates: Partial<User>) => {
+export const updateUserInFirestore = async (
+  userId: string,
+  updates: Partial<User>,
+) => {
   try {
     await UserService.updateUser(userId, updates);
-    
+
     // Actualizar el store local
     const currentUser = useAuthStore.getState().user;
     if (currentUser) {
@@ -89,7 +93,7 @@ export const updateUserInFirestore = async (userId: string, updates: Partial<Use
       useAuthStore.getState().login(updatedUser);
       useUserStore.getState().setUser(updatedUser);
     }
-    
+
     return { success: true };
   } catch (error) {
     console.error("Error updating user in Firestore:", error);
@@ -98,7 +102,9 @@ export const updateUserInFirestore = async (userId: string, updates: Partial<Use
 };
 
 // Función para obtener usuario por wallet address
-export const getUserByWalletAddress = async (walletAddress: string): Promise<User | null> => {
+export const getUserByWalletAddress = async (
+  walletAddress: string,
+): Promise<User | null> => {
   try {
     return await UserService.getUserByWalletAddress(walletAddress);
   } catch (error) {
@@ -106,4 +112,3 @@ export const getUserByWalletAddress = async (walletAddress: string): Promise<Use
     return null;
   }
 };
- 

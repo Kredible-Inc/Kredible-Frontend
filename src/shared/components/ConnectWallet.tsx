@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useWallet } from "@/shared/hooks/useWallet";
 import { useWalletStore } from "@/shared/stores/walletStore";
 import { useAuthStore } from "@/shared/stores/authStore";
@@ -13,14 +13,26 @@ export default function ConnectWallet() {
     isConnecting,
     isConnected,
     connect,
-    disconnect,
     formatAddress,
   } = useWallet();
 
   const checkConnection = useWalletStore((state) => state.checkConnection);
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
 
   const [isProcessingAuth, setIsProcessingAuth] = useState(false);
+
+  const handleWalletConnection = useCallback(async () => {
+    if (!address) return;
+
+    setIsProcessingAuth(true);
+    try {
+      await handleWalletAuth(address);
+    } catch (error) {
+      console.error("Error in wallet authentication:", error);
+    } finally {
+      setIsProcessingAuth(false);
+    }
+  }, [address]);
 
   useEffect(() => {
     // Check if wallet is already connected on component mount
@@ -32,20 +44,7 @@ export default function ConnectWallet() {
     if (isConnected && address && !isAuthenticated && !isProcessingAuth) {
       handleWalletConnection();
     }
-  }, [isConnected, address, isAuthenticated, isProcessingAuth]);
-
-  const handleWalletConnection = async () => {
-    if (!address) return;
-
-    setIsProcessingAuth(true);
-    try {
-      await handleWalletAuth(address);
-    } catch (error) {
-      console.error("Error in wallet authentication:", error);
-    } finally {
-      setIsProcessingAuth(false);
-    }
-  };
+  }, [isConnected, address, isAuthenticated, isProcessingAuth, handleWalletConnection]);
 
   if (isAuthenticated && user && address) {
     return (

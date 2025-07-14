@@ -8,34 +8,13 @@ import { useDashboard } from "@/shared/contexts/DashboardContext";
 import { Button } from "@/components/ui/button";
 import { User, TrendingUp, DollarSign } from "lucide-react";
 import AccountInfoDialog from "./AccountInfoDialog";
+import { ThemeToggle } from "./ThemeToggle";
 
 export default function Navbar() {
-  const { user, isAuthenticated, logout } = useAuthStore();
-  const { isConnected, disconnect } = useWallet();
+  const { user, isAuthenticated } = useAuthStore();
+  const { isConnected } = useWallet();
   const { activeTab, setActiveTab } = useDashboard();
   const [isAccountDialogOpen, setIsAccountDialogOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const handleDisconnect = () => {
-    disconnect();
-    logout();
-    localStorage.removeItem("auth-store");
-    localStorage.removeItem("wallet-storage");
-    localStorage.removeItem("user-store");
-    sessionStorage.setItem("was-logged-out", "true");
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(word => word.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   if (!isConnected || !isAuthenticated || !user) {
     return (
@@ -59,10 +38,11 @@ export default function Navbar() {
               variant={activeTab === "loans" ? "default" : "ghost"}
               size="sm"
               onClick={() => setActiveTab("loans")}
-              className={`flex items-center gap-2 ${activeTab === "loans"
+              className={`flex items-center gap-2 ${
+                activeTab === "loans"
                   ? "bg-blue-600 text-white hover:bg-blue-700"
                   : "text-gray-400 hover:text-white hover:bg-gray-700"
-                }`}
+              }`}
             >
               <DollarSign className="w-4 h-4" />
               Loans
@@ -71,10 +51,11 @@ export default function Navbar() {
               variant={activeTab === "borrows" ? "default" : "ghost"}
               size="sm"
               onClick={() => setActiveTab("borrows")}
-              className={`flex items-center gap-2 ${activeTab === "borrows"
+              className={`flex items-center gap-2 ${
+                activeTab === "borrows"
                   ? "bg-green-600 text-white hover:bg-green-700"
                   : "text-gray-400 hover:text-white hover:bg-gray-700"
-                }`}
+              }`}
             >
               <TrendingUp className="w-4 h-4" />
               Borrows
@@ -83,6 +64,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <Button
             variant="ghost"
             size="sm"
@@ -92,8 +74,6 @@ export default function Navbar() {
             <User className="w-4 h-4 mr-2" />
             Account
           </Button>
-
-
         </div>
       </div>
 
