@@ -1,6 +1,7 @@
 import { CreditScore, CreditFactor } from "@/shared/types/user.types";
 import { UserService } from "./userService";
 import { LoanService } from "./loanService";
+import { User } from "@/shared/types/user.types";
 
 export class CreditScoreService {
   private static readonly MAX_CREDIT_SCORE = 850;
@@ -20,12 +21,14 @@ export class CreditScoreService {
       let totalScore = 0;
 
       // Factor 1: Payment History (35% of score)
-      const paymentHistoryScore = await this.calculatePaymentHistoryScore(user.walletAddress);
+      const paymentHistoryScore = await this.calculatePaymentHistoryScore(
+        user.walletAddress,
+      );
       factors.push({
         name: "Payment History",
         impact: paymentHistoryScore >= 0 ? "positive" : "negative",
         description: "Based on completed loan payments",
-        value: paymentHistoryScore
+        value: paymentHistoryScore,
       });
       totalScore += paymentHistoryScore * 0.35;
 
@@ -35,9 +38,9 @@ export class CreditScoreService {
         name: "Credit Utilization",
         impact: utilizationScore >= 0 ? "positive" : "negative",
         description: "Based on current borrowing vs total borrowed",
-        value: utilizationScore
+        value: utilizationScore,
       });
-      totalScore += utilizationScore * 0.30;
+      totalScore += utilizationScore * 0.3;
 
       // Factor 3: Length of Credit History (15% of score)
       const historyScore = this.calculateCreditHistoryScore(user);
@@ -45,7 +48,7 @@ export class CreditScoreService {
         name: "Credit History Length",
         impact: historyScore >= 0 ? "positive" : "neutral",
         description: "Based on time since first loan",
-        value: historyScore
+        value: historyScore,
       });
       totalScore += historyScore * 0.15;
 
@@ -55,31 +58,33 @@ export class CreditScoreService {
         name: "Credit Mix",
         impact: mixScore >= 0 ? "positive" : "neutral",
         description: "Based on variety of loan types",
-        value: mixScore
+        value: mixScore,
       });
-      totalScore += mixScore * 0.10;
+      totalScore += mixScore * 0.1;
 
       // Factor 5: New Credit (10% of score)
-      const newCreditScore = await this.calculateNewCreditScore(user.walletAddress);
+      const newCreditScore = await this.calculateNewCreditScore(
+        user.walletAddress,
+      );
       factors.push({
         name: "New Credit",
         impact: newCreditScore >= 0 ? "positive" : "negative",
         description: "Based on recent loan applications",
-        value: newCreditScore
+        value: newCreditScore,
       });
-      totalScore += newCreditScore * 0.10;
+      totalScore += newCreditScore * 0.1;
 
       // Normalize score to 300-850 range
       const normalizedScore = Math.max(
         this.MIN_CREDIT_SCORE,
-        Math.min(this.MAX_CREDIT_SCORE, Math.round(totalScore + 500))
+        Math.min(this.MAX_CREDIT_SCORE, Math.round(totalScore + 500)),
       );
 
       const creditScore: CreditScore = {
         score: normalizedScore,
         maxScore: this.MAX_CREDIT_SCORE,
         factors,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       };
 
       // Update user's credit score
@@ -95,24 +100,31 @@ export class CreditScoreService {
   /**
    * Calculate payment history score
    */
-  private static async calculatePaymentHistoryScore(walletAddress: string): Promise<number> {
+  private static async calculatePaymentHistoryScore(
+    walletAddress: string,
+  ): Promise<number> {
     try {
-      const borrowingTransactions = await LoanService.getBorrowingTransactionsByBorrower(walletAddress);
-      
+      const borrowingTransactions =
+        await LoanService.getBorrowingTransactionsByBorrower(walletAddress);
+
       if (borrowingTransactions.length === 0) {
         return 0; // No credit history
       }
 
-      const completedTransactions = borrowingTransactions.filter(t => t.status === 'completed');
-      const defaultedTransactions = borrowingTransactions.filter(t => t.status === 'defaulted');
-      
+      const completedTransactions = borrowingTransactions.filter(
+        (t) => t.status === "completed",
+      );
+      const defaultedTransactions = borrowingTransactions.filter(
+        (t) => t.status === "defaulted",
+      );
+
       const totalTransactions = borrowingTransactions.length;
       const completedRatio = completedTransactions.length / totalTransactions;
       const defaultedRatio = defaultedTransactions.length / totalTransactions;
 
       // Score based on completion rate and default rate
-      let score = completedRatio * 100 - defaultedRatio * 200;
-      
+      const score = completedRatio * 100 - defaultedRatio * 200;
+
       return Math.max(-100, Math.min(100, score));
     } catch (error) {
       console.error("Error calculating payment history score:", error);
@@ -123,17 +135,17 @@ export class CreditScoreService {
   /**
    * Calculate credit utilization score
    */
-  private static calculateCreditUtilizationScore(user: any): number {
+  private static calculateCreditUtilizationScore(user: User): number {
     const totalBorrowed = user.totalBorrowed || 0;
     const totalLent = user.totalLent || 0;
-    
+
     if (totalBorrowed === 0) {
       return 50; // Neutral score for no borrowing
     }
 
     // Calculate utilization ratio (simplified)
     const utilizationRatio = totalBorrowed / (totalBorrowed + totalLent);
-    
+
     // Lower utilization is better
     if (utilizationRatio <= 0.3) {
       return 100; // Excellent
@@ -149,14 +161,15 @@ export class CreditScoreService {
   /**
    * Calculate credit history length score
    */
-  private static calculateCreditHistoryScore(user: any): number {
+  private static calculateCreditHistoryScore(user: User): number {
     if (!user.createdAt) {
       return 0;
     }
 
     const createdAt = new Date(user.createdAt);
     const now = new Date();
-    const monthsSinceCreation = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24 * 30);
+    const monthsSinceCreation =
+      (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24 * 30);
 
     if (monthsSinceCreation >= 60) {
       return 100; // 5+ years
@@ -174,13 +187,13 @@ export class CreditScoreService {
   /**
    * Calculate credit mix score
    */
-  private static calculateCreditMixScore(user: any): number {
+  private static calculateCreditMixScore(user: User): number {
     const lendingHistory = user.lendingHistory || [];
     const borrowingHistory = user.borrowingHistory || [];
-    
+
     const hasLending = lendingHistory.length > 0;
     const hasBorrowing = borrowingHistory.length > 0;
-    
+
     if (hasLending && hasBorrowing) {
       return 100; // Both lending and borrowing
     } else if (hasLending || hasBorrowing) {
@@ -193,16 +206,19 @@ export class CreditScoreService {
   /**
    * Calculate new credit score
    */
-  private static async calculateNewCreditScore(walletAddress: string): Promise<number> {
+  private static async calculateNewCreditScore(
+    walletAddress: string,
+  ): Promise<number> {
     try {
-      const loanRequests = await LoanService.getLoanRequestsByBorrower(walletAddress);
-      
+      const loanRequests =
+        await LoanService.getLoanRequestsByBorrower(walletAddress);
+
       // Get requests from last 6 months
       const sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-      
-      const recentRequests = loanRequests.filter(request => 
-        new Date(request.createdAt) > sixMonthsAgo
+
+      const recentRequests = loanRequests.filter(
+        (request) => new Date(request.createdAt) > sixMonthsAgo,
       );
 
       if (recentRequests.length === 0) {
@@ -231,7 +247,9 @@ export class CreditScoreService {
       }
 
       // If credit score is older than 30 days, recalculate
-      const lastUpdate = user.lastCreditScoreUpdate ? new Date(user.lastCreditScoreUpdate) : null;
+      const lastUpdate = user.lastCreditScoreUpdate
+        ? new Date(user.lastCreditScoreUpdate)
+        : null;
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -240,12 +258,14 @@ export class CreditScoreService {
       }
 
       // Return existing credit score details
-      return user.creditScoreDetails || {
-        score: user.creditScore,
-        maxScore: this.MAX_CREDIT_SCORE,
-        factors: [],
-        lastUpdated: user.lastCreditScoreUpdate || new Date().toISOString()
-      };
+      return (
+        user.creditScoreDetails || {
+          score: user.creditScore,
+          maxScore: this.MAX_CREDIT_SCORE,
+          factors: [],
+          lastUpdated: user.lastCreditScoreUpdate || new Date().toISOString(),
+        }
+      );
     } catch (error) {
       console.error("Error getting credit score:", error);
       return null;
@@ -258,15 +278,20 @@ export class CreditScoreService {
   static async updateCreditScore(userId: string, score: number): Promise<void> {
     try {
       const creditScore: CreditScore = {
-        score: Math.max(this.MIN_CREDIT_SCORE, Math.min(this.MAX_CREDIT_SCORE, score)),
+        score: Math.max(
+          this.MIN_CREDIT_SCORE,
+          Math.min(this.MAX_CREDIT_SCORE, score),
+        ),
         maxScore: this.MAX_CREDIT_SCORE,
-        factors: [{
-          name: "Manual Update",
-          impact: "neutral",
-          description: "Credit score updated manually",
-          value: 0
-        }],
-        lastUpdated: new Date().toISOString()
+        factors: [
+          {
+            name: "Manual Update",
+            impact: "neutral",
+            description: "Credit score updated manually",
+            value: 0,
+          },
+        ],
+        lastUpdated: new Date().toISOString(),
       };
 
       await UserService.updateCreditScore(userId, creditScore);
@@ -279,37 +304,41 @@ export class CreditScoreService {
   /**
    * Get credit score range description
    */
-  static getCreditScoreRange(score: number): { range: string; description: string; color: string } {
+  static getCreditScoreRange(score: number): {
+    range: string;
+    description: string;
+    color: string;
+  } {
     if (score >= 800) {
       return {
         range: "Excellent",
         description: "Very low risk borrower",
-        color: "green"
+        color: "green",
       };
     } else if (score >= 740) {
       return {
         range: "Very Good",
         description: "Low risk borrower",
-        color: "green"
+        color: "green",
       };
     } else if (score >= 670) {
       return {
         range: "Good",
         description: "Moderate risk borrower",
-        color: "yellow"
+        color: "yellow",
       };
     } else if (score >= 580) {
       return {
         range: "Fair",
         description: "Higher risk borrower",
-        color: "orange"
+        color: "orange",
       };
     } else {
       return {
         range: "Poor",
         description: "High risk borrower",
-        color: "red"
+        color: "red",
       };
     }
   }
-} 
+}

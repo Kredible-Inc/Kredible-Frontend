@@ -33,7 +33,9 @@ export default function UserDashboard() {
       <div className="min-h-screen bg-gradient-to-br from-[#0F1224] to-black flex items-center justify-center p-6">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Welcome to Kredible</h1>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              Welcome to Kredible
+            </h1>
             <p className="text-gray-400">Please complete your registration</p>
           </div>
           <UserInfoModal />
@@ -56,4 +58,4 @@ export default function UserDashboard() {
       </div>
     </DashboardProvider>
   );
-} 
+}

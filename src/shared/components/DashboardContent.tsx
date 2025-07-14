@@ -1,7 +1,14 @@
 "use client";
 
 import { useAuthStore } from "@/shared/stores/authStore";
-import { DollarSign, TrendingUp, Activity, Rocket, Plus, Search } from "lucide-react";
+import {
+  DollarSign,
+  TrendingUp,
+  Activity,
+  Rocket,
+  Plus,
+  Search,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDashboard } from "@/shared/contexts/DashboardContext";
 
@@ -9,7 +16,7 @@ export default function DashboardContent() {
   const { user } = useAuthStore();
   const { activeTab } = useDashboard();
 
-  if (activeTab === 'loans') {
+  if (activeTab === "loans") {
     return (
       <div className="space-y-6">
         {/* Welcome Card */}
@@ -19,7 +26,9 @@ export default function DashboardContent() {
               <h2 className="text-2xl font-bold text-white">
                 Lending Dashboard
               </h2>
-              <p className="text-gray-400">Manage your lending portfolio and find borrowers</p>
+              <p className="text-gray-400">
+                Manage your lending portfolio and find borrowers
+              </p>
             </div>
             <div className="text-right">
               <div className="text-sm text-gray-400">Total Lent</div>
@@ -40,7 +49,8 @@ export default function DashboardContent() {
               <div className="ml-4">
                 <div className="text-sm text-gray-400">Active Loans</div>
                 <div className="text-2xl font-bold text-white">
-                  {user?.lendingHistory?.filter(t => t.status === 'active').length || 0}
+                  {user?.lendingHistory?.filter((t) => t.status === "active")
+                    .length || 0}
                 </div>
               </div>
             </div>
@@ -54,7 +64,8 @@ export default function DashboardContent() {
               <div className="ml-4">
                 <div className="text-sm text-gray-400">Completed Loans</div>
                 <div className="text-2xl font-bold text-white">
-                  {user?.lendingHistory?.filter(t => t.status === 'completed').length || 0}
+                  {user?.lendingHistory?.filter((t) => t.status === "completed")
+                    .length || 0}
                 </div>
               </div>
             </div>
@@ -68,10 +79,9 @@ export default function DashboardContent() {
               <div className="ml-4">
                 <div className="text-sm text-gray-400">Average Interest</div>
                 <div className="text-2xl font-bold text-white">
-                  {user?.lendingHistory?.length ? 
-                    `${(user.lendingHistory.reduce((sum, t) => sum + t.interestRate, 0) / user.lendingHistory.length).toFixed(1)}%` : 
-                    '0%'
-                  }
+                  {user?.lendingHistory?.length
+                    ? `${(user.lendingHistory.reduce((sum, t) => sum + t.interestRate, 0) / user.lendingHistory.length).toFixed(1)}%`
+                    : "0%"}
                 </div>
               </div>
             </div>
@@ -88,7 +98,10 @@ export default function DashboardContent() {
               <Plus className="w-4 h-4 mr-2" />
               Create Lending Offer
             </Button>
-            <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white">
+            <Button
+              variant="outline"
+              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+            >
               <Search className="w-4 h-4 mr-2" />
               Find Borrowers
             </Button>
@@ -101,7 +114,9 @@ export default function DashboardContent() {
             <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Rocket className="w-8 h-8 text-blue-400" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Lending Features Coming Soon</h3>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              Lending Features Coming Soon
+            </h3>
             <p className="text-gray-400">
               Advanced lending tools, risk assessment, and portfolio management.
             </p>
@@ -120,7 +135,9 @@ export default function DashboardContent() {
             <h2 className="text-2xl font-bold text-white">
               Borrowing Dashboard
             </h2>
-            <p className="text-gray-400">Find lenders and manage your borrowing needs</p>
+            <p className="text-gray-400">
+              Find lenders and manage your borrowing needs
+            </p>
           </div>
           <div className="text-right">
             <div className="text-sm text-gray-400">Total Borrowed</div>
@@ -141,7 +158,8 @@ export default function DashboardContent() {
             <div className="ml-4">
               <div className="text-sm text-gray-400">Active Borrows</div>
               <div className="text-2xl font-bold text-white">
-                {user?.borrowingHistory?.filter(t => t.status === 'active').length || 0}
+                {user?.borrowingHistory?.filter((t) => t.status === "active")
+                  .length || 0}
               </div>
             </div>
           </div>
@@ -155,7 +173,8 @@ export default function DashboardContent() {
             <div className="ml-4">
               <div className="text-sm text-gray-400">Completed Borrows</div>
               <div className="text-2xl font-bold text-white">
-                {user?.borrowingHistory?.filter(t => t.status === 'completed').length || 0}
+                {user?.borrowingHistory?.filter((t) => t.status === "completed")
+                  .length || 0}
               </div>
             </div>
           </div>
@@ -165,11 +184,11 @@ export default function DashboardContent() {
           <div className="flex items-center">
             <div className="p-2 bg-purple-900/20 rounded-lg">
               <DollarSign className="w-6 h-6 text-purple-400" />
-              </div>
+            </div>
             <div className="ml-4">
               <div className="text-sm text-gray-400">Credit Score</div>
               <div className="text-2xl font-bold text-white">
-                {user?.creditScore || 'N/A'}
+                {user?.creditScore || "N/A"}
               </div>
             </div>
           </div>
@@ -186,10 +205,13 @@ export default function DashboardContent() {
             <Plus className="w-4 h-4 mr-2" />
             Request Loan
           </Button>
-                      <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white">
-              <Search className="w-4 h-4 mr-2" />
-              Find Lenders
-            </Button>
+          <Button
+            variant="outline"
+            className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+          >
+            <Search className="w-4 h-4 mr-2" />
+            Find Lenders
+          </Button>
         </div>
       </div>
 
@@ -199,7 +221,9 @@ export default function DashboardContent() {
           <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <Rocket className="w-8 h-8 text-green-400" />
           </div>
-          <h3 className="text-xl font-semibold text-white mb-2">Borrowing Features Coming Soon</h3>
+          <h3 className="text-xl font-semibold text-white mb-2">
+            Borrowing Features Coming Soon
+          </h3>
           <p className="text-gray-400">
             Credit score improvement, loan matching, and repayment tracking.
           </p>
@@ -207,4 +231,4 @@ export default function DashboardContent() {
       </div>
     </div>
   );
-} 
+}
