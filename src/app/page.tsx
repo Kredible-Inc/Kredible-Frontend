@@ -5,25 +5,15 @@ import ConnectWallet from "@/shared/components/ConnectWallet";
 import UserInfoModal from "@/shared/components/UserInfoModal";
 import { useAuthStore } from "@/shared/stores/authStore";
 import { useWallet } from "@/shared/hooks/useWallet";
+import { useCreditScore } from "@/shared/hooks/useCreditScore";
 import type { User } from "../shared/types/lending";
 
-// Simulated user with new score range
-const mockUser: User = {
-  address: "GAXB4K2M4LXYZ789ABCDEF123456789STELLAR",
-  creditScore: 650, // Score in range 400-800
-  ltv: 70,
-  apr: 7.0,
-  totalBorrowed: 15000,
-  totalLent: 0, // Added to fix type error
-  totalRepaid: 12,
-  activeLoans: 2,
-};
+const WALLET_ADDRESS = "GAXB4K2M4LXYZ789ABCDEF123456789STELLAR";
 
-function AppContent() {
-  const { isAuthenticated, user } = useAuthStore();
+function AppContent({ user }: { user: User }) {
+  const { isAuthenticated } = useAuthStore();
   const { isConnected } = useWallet();
 
-  // If not connected, show connection screen
   if (!isConnected) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0F1224] to-black flex items-center justify-center p-6">
@@ -40,7 +30,6 @@ function AppContent() {
     );
   }
 
-  // If connected but not authenticated, show welcome screen
   if (!isAuthenticated || !user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0F1224] to-black flex items-center justify-center p-6">
@@ -58,14 +47,34 @@ function AppContent() {
     );
   }
 
-  // If authenticated, show dashboard
   return <Dashboard />;
 }
 
 export default function Page() {
+  const { data, isLoading } = useCreditScore(WALLET_ADDRESS);
+  const score = typeof data?.score === "number" ? data.score : 650;
+  const user: User = {
+    address: WALLET_ADDRESS,
+    creditScore: score,
+    ltv: 70,
+    apr: 7.0,
+    totalBorrowed: 15000,
+    totalLent: 0,
+    totalRepaid: 12,
+    activeLoans: 2,
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Loading credit score...
+      </div>
+    );
+  }
+
   return (
-    <LendingProvider initialUser={mockUser}>
-      <AppContent />
+    <LendingProvider initialUser={user}>
+      <AppContent user={user} />
     </LendingProvider>
   );
 }

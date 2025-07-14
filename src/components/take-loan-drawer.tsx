@@ -11,13 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DollarSign,
   Clock,
@@ -39,23 +33,49 @@ interface TakeLoanDrawerProps {
   children: React.ReactNode;
 }
 
-export function TakeLoanDrawer({ loan, addToast, children }: TakeLoanDrawerProps) {
+export function TakeLoanDrawer({
+  loan,
+  addToast,
+  children,
+}: TakeLoanDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
   const { takeLoan, user } = useLending();
 
   const getRiskLevel = (score: number) => {
-    if (score >= 700) return { level: "Low", color: "text-emerald-400", bgColor: "bg-emerald-900/20" };
-    if (score >= 600) return { level: "Medium", color: "text-blue-400", bgColor: "bg-blue-900/20" };
-    if (score >= 500) return { level: "High", color: "text-yellow-400", bgColor: "bg-yellow-900/20" };
-    return { level: "Very High", color: "text-red-400", bgColor: "bg-red-900/20" };
+    if (score >= 700)
+      return {
+        level: "Low",
+        color: "text-emerald-400",
+        bgColor: "bg-emerald-900/20",
+      };
+    if (score >= 600)
+      return {
+        level: "Medium",
+        color: "text-blue-400",
+        bgColor: "bg-blue-900/20",
+      };
+    if (score >= 500)
+      return {
+        level: "High",
+        color: "text-yellow-400",
+        bgColor: "bg-yellow-900/20",
+      };
+    return {
+      level: "Very High",
+      color: "text-red-400",
+      bgColor: "bg-red-900/20",
+    };
   };
 
   const handleConfirmTakeLoan = async () => {
     setIsConfirming(true);
     try {
       await takeLoan(loan.id);
-      addToast("Loan taken successfully! Check 'My Loans' to track your loan.", "success");
+      addToast(
+        "Loan taken successfully! Check 'My Loans' to track your loan.",
+        "success",
+      );
       setIsOpen(false);
     } catch (error) {
       console.error("Error taking loan:", error);
@@ -154,9 +174,7 @@ export function TakeLoanDrawer({ loan, addToast, children }: TakeLoanDrawerProps
                   <Shield className="w-4 h-4 text-orange-400" />
                   <div>
                     <p className="text-sm text-gray-400">Max LTV</p>
-                    <p className="font-semibold text-white">
-                      {loan.maxLTV}%
-                    </p>
+                    <p className="font-semibold text-white">{loan.maxLTV}%</p>
                   </div>
                 </div>
               </div>
@@ -169,9 +187,13 @@ export function TakeLoanDrawer({ loan, addToast, children }: TakeLoanDrawerProps
               <div className="flex items-start gap-3">
                 <AlertTriangle className="h-5 w-5 text-red-400 mt-0.5" />
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-red-400">Loan Risk Warning</h4>
+                  <h4 className="font-semibold text-red-400">
+                    Loan Risk Warning
+                  </h4>
                   <p className="text-sm text-gray-300">
-                    This is a peer-to-peer loan. You are responsible for repayment and collateral. Defaulting may result in loss of collateral and negative credit impact.
+                    This is a peer-to-peer loan. You are responsible for
+                    repayment and collateral. Defaulting may result in loss of
+                    collateral and negative credit impact.
                   </p>
                 </div>
               </div>
@@ -209,4 +231,4 @@ export function TakeLoanDrawer({ loan, addToast, children }: TakeLoanDrawerProps
       </SheetContent>
     </Sheet>
   );
-} 
+}

@@ -10,8 +10,8 @@ export function getCreditTier(score: number): {
       tier: "High",
       ltv: 80,
       apr: 6.0,
-      color: "text-emerald-400",
-      bgColor: "bg-emerald-900/20 border-emerald-500/30",
+      color: "text-blue-300",
+      bgColor: "bg-blue-900/40 border-blue-400/40",
     };
   if (score >= 600)
     return {
@@ -19,22 +19,22 @@ export function getCreditTier(score: number): {
       ltv: 70,
       apr: 7.0,
       color: "text-blue-400",
-      bgColor: "bg-blue-900/20 border-blue-500/30",
+      bgColor: "bg-blue-900/30 border-blue-500/30",
     };
   if (score >= 500)
     return {
       tier: "Mid",
       ltv: 60,
       apr: 8.0,
-      color: "text-yellow-400",
-      bgColor: "bg-yellow-900/20 border-yellow-500/30",
+      color: "text-blue-500",
+      bgColor: "bg-blue-900/20 border-blue-600/20",
     };
   return {
     tier: "Low",
     ltv: 50,
     apr: 9.0,
-    color: "text-red-400",
-    bgColor: "bg-red-900/20 border-red-500/30",
+    color: "text-blue-700",
+    bgColor: "bg-blue-950/30 border-blue-800/30",
   };
 }
 
