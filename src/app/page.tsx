@@ -14,6 +14,7 @@ const mockUser: User = {
   ltv: 70,
   apr: 7.0,
   totalBorrowed: 15000,
+  totalLent: 0, // Added to fix type error
   totalRepaid: 12,
   activeLoans: 2,
 };

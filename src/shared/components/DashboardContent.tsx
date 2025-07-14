@@ -1,11 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/shared/stores/authStore";
-import {
-  TrendingUp,
-  Target,
-  Award,
-} from "lucide-react";
+import { TrendingUp, Target, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDashboard } from "@/shared/contexts/DashboardContext";
 import { CreditScoreCard } from "@/components/credit-score-card";

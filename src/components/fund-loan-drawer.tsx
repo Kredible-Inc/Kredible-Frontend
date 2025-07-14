@@ -12,12 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DollarSign,
   Clock,
@@ -39,29 +34,59 @@ interface FundLoanDrawerProps {
   children: React.ReactNode;
 }
 
-export function FundLoanDrawer({ loanRequest, addToast, children }: FundLoanDrawerProps) {
+export function FundLoanDrawer({
+  loanRequest,
+  addToast,
+  children,
+}: FundLoanDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
   const { fundLoan } = useLending();
 
-  const calculatePotentialReturn = (amount: number, apr: number, duration: number) => {
+  const calculatePotentialReturn = (
+    amount: number,
+    apr: number,
+    duration: number,
+  ) => {
     const dailyRate = apr / 100 / 365;
     const totalReturn = amount * dailyRate * duration;
     return totalReturn;
   };
 
   const getRiskLevel = (score: number) => {
-    if (score >= 700) return { level: "Low", color: "text-emerald-400", bgColor: "bg-emerald-900/20" };
-    if (score >= 600) return { level: "Medium", color: "text-blue-400", bgColor: "bg-blue-900/20" };
-    if (score >= 500) return { level: "High", color: "text-yellow-400", bgColor: "bg-yellow-900/20" };
-    return { level: "Very High", color: "text-red-400", bgColor: "bg-red-900/20" };
+    if (score >= 700)
+      return {
+        level: "Low",
+        color: "text-emerald-400",
+        bgColor: "bg-emerald-900/20",
+      };
+    if (score >= 600)
+      return {
+        level: "Medium",
+        color: "text-blue-400",
+        bgColor: "bg-blue-900/20",
+      };
+    if (score >= 500)
+      return {
+        level: "High",
+        color: "text-yellow-400",
+        bgColor: "bg-yellow-900/20",
+      };
+    return {
+      level: "Very High",
+      color: "text-red-400",
+      bgColor: "bg-red-900/20",
+    };
   };
 
   const handleConfirmFunding = async () => {
     setIsConfirming(true);
     try {
       await fundLoan(loanRequest.id);
-      addToast("Loan funded successfully! Check 'My Loans' to track your investment.", "success");
+      addToast(
+        "Loan funded successfully! Check 'My Loans' to track your investment.",
+        "success",
+      );
       setIsOpen(false);
     } catch (error) {
       console.error("Error funding loan:", error);
@@ -74,15 +99,13 @@ export function FundLoanDrawer({ loanRequest, addToast, children }: FundLoanDraw
   const potentialReturn = calculatePotentialReturn(
     loanRequest.amountUSDC,
     loanRequest.apr,
-    loanRequest.duration
+    loanRequest.duration,
   );
   const riskInfo = getRiskLevel(loanRequest.borrowerScore);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        {children}
-      </SheetTrigger>
+      <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent className="bg-[#0F1224] border-l border-[#0B0A0B] w-[400px] sm:w-[540px] overflow-y-auto">
         <SheetHeader className="mb-6">
           <SheetTitle className="text-white flex items-center gap-2">
@@ -145,7 +168,7 @@ export function FundLoanDrawer({ loanRequest, addToast, children }: FundLoanDraw
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <Percent className="w-4 h-4 text-blue-400" />
                   <div>
@@ -155,7 +178,7 @@ export function FundLoanDrawer({ loanRequest, addToast, children }: FundLoanDraw
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-purple-400" />
                   <div>
@@ -165,7 +188,7 @@ export function FundLoanDrawer({ loanRequest, addToast, children }: FundLoanDraw
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <Shield className="w-4 h-4 text-orange-400" />
                   <div>
@@ -203,7 +226,12 @@ export function FundLoanDrawer({ loanRequest, addToast, children }: FundLoanDraw
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Collateral Ratio</span>
                 <span className="font-semibold text-white">
-                  {((loanRequest.collateralXLM * 0.12 / loanRequest.amountUSDC) * 100).toFixed(1)}%
+                  {(
+                    ((loanRequest.collateralXLM * 0.12) /
+                      loanRequest.amountUSDC) *
+                    100
+                  ).toFixed(1)}
+                  %
                 </span>
               </div>
             </CardContent>
@@ -233,7 +261,10 @@ export function FundLoanDrawer({ loanRequest, addToast, children }: FundLoanDraw
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">ROI</span>
                 <span className="font-semibold text-emerald-400">
-                  {((potentialReturn / loanRequest.amountUSDC) * 100).toFixed(2)}%
+                  {((potentialReturn / loanRequest.amountUSDC) * 100).toFixed(
+                    2,
+                  )}
+                  %
                 </span>
               </div>
               <Separator className="bg-yellow-500/30" />
@@ -252,10 +283,14 @@ export function FundLoanDrawer({ loanRequest, addToast, children }: FundLoanDraw
               <div className="flex items-start gap-3">
                 <AlertTriangle className="h-5 w-5 text-red-400 mt-0.5" />
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-red-400">Investment Risk Warning</h4>
+                  <h4 className="font-semibold text-red-400">
+                    Investment Risk Warning
+                  </h4>
                   <p className="text-sm text-gray-300">
-                    This is a peer-to-peer lending investment. Returns are not guaranteed and you may lose your investment if the borrower defaults. 
-                    The collateral provides some protection but may not cover the full amount in case of XLM price volatility.
+                    This is a peer-to-peer lending investment. Returns are not
+                    guaranteed and you may lose your investment if the borrower
+                    defaults. The collateral provides some protection but may
+                    not cover the full amount in case of XLM price volatility.
                   </p>
                 </div>
               </div>
@@ -293,4 +328,4 @@ export function FundLoanDrawer({ loanRequest, addToast, children }: FundLoanDraw
       </SheetContent>
     </Sheet>
   );
-} 
+}
