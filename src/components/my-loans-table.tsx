@@ -10,11 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Clock,
-  Percent,
-  Loader2,
-} from "lucide-react";
+import { Clock, Percent, Loader2 } from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/shared/utils/credit";
 import { useLending } from "@/shared/contexts/lending-context";
 

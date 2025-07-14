@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 
-type DashboardTab = "loans" | "borrows";
+type DashboardTab = "loans" | "borrows" | "credit-score";
 
 interface DashboardContextType {
   activeTab: DashboardTab;

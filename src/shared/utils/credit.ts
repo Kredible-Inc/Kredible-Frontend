@@ -7,7 +7,7 @@ export function getCreditTier(score: number): {
 } {
   if (score >= 700)
     return {
-      tier: "Alto",
+      tier: "High",
       ltv: 80,
       apr: 6.0,
       color: "text-emerald-400",
@@ -15,7 +15,7 @@ export function getCreditTier(score: number): {
     };
   if (score >= 600)
     return {
-      tier: "Medio-Alto",
+      tier: "Mid-high",
       ltv: 70,
       apr: 7.0,
       color: "text-blue-400",
@@ -23,14 +23,14 @@ export function getCreditTier(score: number): {
     };
   if (score >= 500)
     return {
-      tier: "Medio",
+      tier: "Mid",
       ltv: 60,
       apr: 8.0,
       color: "text-yellow-400",
       bgColor: "bg-yellow-900/20 border-yellow-500/30",
     };
   return {
-    tier: "Bajo",
+    tier: "Low",
     ltv: 50,
     apr: 9.0,
     color: "text-red-400",
