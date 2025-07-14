@@ -32,7 +32,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-bold text-white">Kredible</h1>
-          
+
           {/* Navigation Tabs */}
           <div className="flex items-center gap-2 ml-8">
             <Button
@@ -48,7 +48,7 @@ export default function Navbar() {
               <DollarSign className="w-4 h-4" />
               Lending
             </Button>
-            
+
             <Button
               variant={activeTab === "borrows" ? "default" : "ghost"}
               size="sm"
@@ -62,7 +62,7 @@ export default function Navbar() {
               <Shield className="w-4 h-4" />
               Borrowing
             </Button>
-            
+
             <Button
               variant={activeTab === "credit-score" ? "default" : "ghost"}
               size="sm"

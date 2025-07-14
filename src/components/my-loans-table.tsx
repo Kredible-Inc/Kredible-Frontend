@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Clock, Percent, Loader2 } from "lucide-react";
+import { Clock, Percent, Loader2, TrendingUp, TrendingDown } from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/shared/utils/credit";
 import { useLending } from "@/shared/contexts/lending-context";
 
@@ -19,34 +19,10 @@ interface MyLoansTableProps {
 }
 
 export function MyLoansTable({ addToast }: MyLoansTableProps) {
-  const { isLoading } = useLending();
+  const { lendingHistory, isLoading } = useLending();
 
-  // Datos simulados simplificados
-  const borrowedLoans = [
-    {
-      id: "ml1",
-      lender: "Alice",
-      amount: 1000,
-      apr: 7.5,
-      duration: 30,
-      status: "active" as const,
-      dueDate: "2024-02-15",
-      collateral: 1500,
-    },
-  ];
-
-  const lentLoans = [
-    {
-      id: "ml2",
-      borrower: "Bob",
-      amount: 500,
-      apr: 8.0,
-      duration: 60,
-      status: "active" as const,
-      dueDate: "2024-03-15",
-      collateral: 800,
-    },
-  ];
+  const borrowedLoans = lendingHistory.filter(loan => loan.type === "borrowed");
+  const lentLoans = lendingHistory.filter(loan => loan.type === "lent");
 
   const handleRepayLoan = async () => {
     try {
@@ -64,13 +40,18 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
     }
   };
 
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString();
+  };
+
   return (
     <div className="space-y-6">
       {/* Borrowed Loans */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-white">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <TrendingDown className="h-5 w-5 text-blue-400" />
               My Borrowed Loans
             </h3>
             <p className="text-sm text-gray-400">
@@ -81,6 +62,7 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
 
         {borrowedLoans.length === 0 ? (
           <div className="text-center py-8">
+            <TrendingDown className="h-12 w-12 text-gray-600 mx-auto mb-4" />
             <div className="text-gray-400">
               You don&apos;t have any borrowed loans
             </div>
@@ -93,6 +75,8 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
                 <TableHead className="text-gray-300">Amount</TableHead>
                 <TableHead className="text-gray-300">APR</TableHead>
                 <TableHead className="text-gray-300">Duration</TableHead>
+                <TableHead className="text-gray-300">Due Date</TableHead>
+                <TableHead className="text-gray-300">Interest Owed</TableHead>
                 <TableHead className="text-gray-300">Status</TableHead>
                 <TableHead className="text-gray-300">Actions</TableHead>
               </TableRow>
@@ -101,10 +85,10 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
               {borrowedLoans.map((loan) => (
                 <TableRow key={loan.id} className="border-blue-500/30">
                   <TableCell className="font-mono text-sm text-gray-300">
-                    {loan.lender}
+                    {loan.counterparty}
                   </TableCell>
                   <TableCell className="font-semibold text-white">
-                    {formatCurrency(loan.amount)}
+                    {formatCurrency(loan.amountUSDC)}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
@@ -122,16 +106,26 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
                       </span>
                     </div>
                   </TableCell>
+                  <TableCell className="text-gray-300">
+                    {formatDate(loan.dueDate)}
+                  </TableCell>
+                  <TableCell className="text-red-400 font-semibold">
+                    {formatCurrency(loan.interestOwed || 0)}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
                       className={
                         loan.status === "active"
                           ? "text-emerald-400 border-emerald-500"
+                          : loan.status === "overdue"
+                          ? "text-red-400 border-red-500"
                           : "text-gray-400 border-gray-500"
                       }
                     >
-                      {loan.status === "active" ? "Active" : "Completed"}
+                      {loan.status === "active" ? "Active" : 
+                       loan.status === "overdue" ? "Overdue" : 
+                       loan.status === "repaid" ? "Repaid" : "Defaulted"}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -139,7 +133,7 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
                       <Button
                         size="sm"
                         onClick={() => handleRepayLoan()}
-                        disabled={isLoading}
+                        disabled={isLoading || loan.status !== "active"}
                         className="bg-emerald-600 hover:bg-emerald-700"
                       >
                         {isLoading ? (
@@ -151,7 +145,7 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
                       <Button
                         size="sm"
                         onClick={() => handleExtendLoan()}
-                        disabled={isLoading}
+                        disabled={isLoading || loan.status !== "active"}
                         variant="outline"
                         className="border-blue-500 text-blue-400 hover:bg-blue-500/20"
                       >
@@ -170,7 +164,10 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-white">My Lent Loans</h3>
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-emerald-400" />
+              My Lent Loans
+            </h3>
             <p className="text-sm text-gray-400">
               Loans you have lent to other users
             </p>
@@ -179,7 +176,8 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
 
         {lentLoans.length === 0 ? (
           <div className="text-center py-8">
-            <div className="text-gray-400">No has prestado dinero</div>
+            <TrendingUp className="h-12 w-12 text-gray-600 mx-auto mb-4" />
+            <div className="text-gray-400">You haven&apos;t lent any money yet</div>
           </div>
         ) : (
           <Table>
@@ -189,6 +187,8 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
                 <TableHead className="text-gray-300">Amount</TableHead>
                 <TableHead className="text-gray-300">APR</TableHead>
                 <TableHead className="text-gray-300">Duration</TableHead>
+                <TableHead className="text-gray-300">Due Date</TableHead>
+                <TableHead className="text-gray-300">Interest Earned</TableHead>
                 <TableHead className="text-gray-300">Status</TableHead>
                 <TableHead className="text-gray-300">Actions</TableHead>
               </TableRow>
@@ -197,10 +197,10 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
               {lentLoans.map((loan) => (
                 <TableRow key={loan.id} className="border-green-500/30">
                   <TableCell className="font-mono text-sm text-gray-300">
-                    {loan.borrower}
+                    {loan.counterparty}
                   </TableCell>
                   <TableCell className="font-semibold text-white">
-                    {formatCurrency(loan.amount)}
+                    {formatCurrency(loan.amountUSDC)}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
@@ -218,16 +218,26 @@ export function MyLoansTable({ addToast }: MyLoansTableProps) {
                       </span>
                     </div>
                   </TableCell>
+                  <TableCell className="text-gray-300">
+                    {formatDate(loan.dueDate)}
+                  </TableCell>
+                  <TableCell className="text-emerald-400 font-semibold">
+                    {formatCurrency(loan.interestEarned || 0)}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
                       className={
                         loan.status === "active"
                           ? "text-emerald-400 border-emerald-500"
+                          : loan.status === "overdue"
+                          ? "text-red-400 border-red-500"
                           : "text-gray-400 border-gray-500"
                       }
                     >
-                      {loan.status === "active" ? "Active" : "Completed"}
+                      {loan.status === "active" ? "Active" : 
+                       loan.status === "overdue" ? "Overdue" : 
+                       loan.status === "repaid" ? "Repaid" : "Defaulted"}
                     </Badge>
                   </TableCell>
                   <TableCell>

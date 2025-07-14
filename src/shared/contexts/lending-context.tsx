@@ -6,6 +6,7 @@ import type {
   LoanRequest,
   AvailableLoan,
   LenderOffer,
+  MyLoan,
 } from "../types/lending";
 
 interface LendingContextType {
@@ -13,6 +14,7 @@ interface LendingContextType {
   loanRequests: LoanRequest[];
   availableLoans: AvailableLoan[];
   lenderOffers: LenderOffer[];
+  lendingHistory: MyLoan[];
   isLoading: boolean;
   createLoanRequest: (amount: number, duration: number) => Promise<void>;
   fundLoan: (loanId: string) => Promise<void>;
@@ -51,9 +53,9 @@ export function LendingProvider({
       id: "1",
       borrower: "GAXB...K2M4",
       borrowerScore: 650,
-      amountUSDC: 1000,
-      collateralXLM: 11904.76,
-      ltv: 70,
+      amountUSDC: 500,
+      collateralXLM: 1501.25, // $750 worth of XLM at $0.12 per XLM
+      ltv: 75,
       apr: 7.0,
       duration: 30,
       status: "pending",
@@ -96,9 +98,54 @@ export function LendingProvider({
       status: "available",
       createdAt: new Date("2024-01-14"),
     },
+    {
+      id: "3",
+      lender: "GBYZ...M9P2",
+      amountUSDC: 10000,
+      apr: 5.8,
+      duration: 60,
+      minCreditScore: 700,
+      maxLTV: 80,
+      status: "available",
+      createdAt: new Date("2024-01-13"),
+    },
+    {
+      id: "4",
+      lender: "GDFE...N3Q7",
+      amountUSDC: 1500,
+      apr: 8.5,
+      duration: 7,
+      minCreditScore: 450,
+      maxLTV: 50,
+      status: "available",
+      createdAt: new Date("2024-01-12"),
+    },
+    {
+      id: "5",
+      lender: "GHIJ...O1R4",
+      amountUSDC: 7500,
+      apr: 6.0,
+      duration: 45,
+      minCreditScore: 650,
+      maxLTV: 75,
+      status: "available",
+      createdAt: new Date("2024-01-11"),
+    },
+    {
+      id: "6",
+      lender: "GKLM...P8S9",
+      amountUSDC: 3000,
+      apr: 7.8,
+      duration: 20,
+      minCreditScore: 550,
+      maxLTV: 65,
+      status: "available",
+      createdAt: new Date("2024-01-10"),
+    },
   ]);
 
   const [lenderOffers, setLenderOffers] = useState<LenderOffer[]>([]);
+  const [lendingHistory, setLendingHistory] = useState<MyLoan[]>([]);
 
   const createLoanRequest = async (amount: number, duration: number) => {
     setIsLoading(true);
@@ -136,11 +183,44 @@ export function LendingProvider({
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
+      // Find the loan request
+      const loanRequest = loanRequests.find(loan => loan.id === loanId);
+      if (!loanRequest) {
+        throw new Error("Loan request not found");
+      }
+
+      // Update loan request status
       setLoanRequests((prev) =>
         prev.map((loan) =>
           loan.id === loanId ? { ...loan, status: "funded" as const } : loan,
         ),
       );
+
+      // Create a new lending transaction
+      const newLendingTransaction: MyLoan = {
+        id: `lend_${Date.now()}`,
+        type: "lent",
+        counterparty: loanRequest.borrower,
+        amountUSDC: loanRequest.amountUSDC,
+        apr: loanRequest.apr,
+        duration: loanRequest.duration,
+        startDate: new Date(),
+        dueDate: new Date(Date.now() + loanRequest.duration * 24 * 60 * 60 * 1000),
+        status: "active",
+        collateralXLM: loanRequest.collateralXLM,
+        interestEarned: (loanRequest.amountUSDC * loanRequest.apr / 100) * (loanRequest.duration / 365),
+        interestOwed: 0,
+      };
+
+      // Add to lending history
+      setLendingHistory((prev) => [newLendingTransaction, ...prev]);
+
+      // Update user statistics
+      setUser((prev) => ({
+        ...prev,
+        totalLent: (prev.totalLent || 0) + loanRequest.amountUSDC,
+        activeLoans: (prev.activeLoans || 0) + 1,
+      }));
     } finally {
       setIsLoading(false);
     }
@@ -151,11 +231,34 @@ export function LendingProvider({
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
+      const loan = availableLoans.find(l => l.id === loanId);
+      if (!loan) {
+        throw new Error("Available loan not found");
+      }
+
       setAvailableLoans((prev) =>
-        prev.map((loan) =>
-          loan.id === loanId ? { ...loan, status: "taken" as const } : loan,
+        prev.map((l) =>
+          l.id === loanId ? { ...l, status: "taken" as const } : l,
         ),
       );
+
+      // Create a new borrowing transaction
+      const newBorrowingTransaction: MyLoan = {
+        id: `borrow_${Date.now()}`,
+        type: "borrowed",
+        counterparty: loan.lender,
+        amountUSDC: loan.amountUSDC,
+        apr: loan.apr,
+        duration: loan.duration,
+        startDate: new Date(),
+        dueDate: new Date(Date.now() + loan.duration * 24 * 60 * 60 * 1000),
+        status: "active",
+        interestEarned: 0,
+        interestOwed: (loan.amountUSDC * loan.apr / 100) * (loan.duration / 365),
+      };
+
+      // Add to lending history (for borrowed loans too)
+      setLendingHistory((prev) => [newBorrowingTransaction, ...prev]);
 
       // Update user statistics
       setUser((prev) => ({
@@ -215,6 +318,7 @@ export function LendingProvider({
         loanRequests,
         availableLoans,
         lenderOffers,
+        lendingHistory,
         isLoading,
         createLoanRequest,
         fundLoan,

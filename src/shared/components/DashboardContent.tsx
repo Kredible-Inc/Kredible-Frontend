@@ -2,15 +2,9 @@
 
 import { useAuthStore } from "@/shared/stores/authStore";
 import {
-  DollarSign,
   TrendingUp,
-  Activity,
-  Rocket,
-  Plus,
-  Search,
   Target,
   Award,
-  TrendingDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDashboard } from "@/shared/contexts/DashboardContext";
@@ -32,25 +26,25 @@ export default function DashboardContent() {
         return {
           title: "Credit Score Dashboard",
           subtitle: "Monitor and improve your on-chain credit standing",
-          gradient: "from-purple-400 to-pink-400"
+          gradient: "from-purple-400 to-pink-400",
         };
       case "loans":
         return {
           title: "Lending Platform",
           subtitle: "Earn interest by providing liquidity to borrowers",
-          gradient: "from-blue-400 to-cyan-400"
+          gradient: "from-blue-400 to-cyan-400",
         };
       case "borrows":
         return {
-          title: "Borrowing Platform", 
+          title: "Borrowing Platform",
           subtitle: "Access liquidity with your credit score and collateral",
-          gradient: "from-green-400 to-emerald-400"
+          gradient: "from-green-400 to-emerald-400",
         };
       default:
         return {
           title: "Stellar Lending Platform",
           subtitle: "Decentralized P2P lending with on-chain credit score",
-          gradient: "from-blue-400 to-purple-400"
+          gradient: "from-blue-400 to-purple-400",
         };
     }
   };
@@ -62,12 +56,12 @@ export default function DashboardContent() {
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className={`text-4xl font-bold bg-gradient-to-r ${headerContent.gradient} bg-clip-text text-transparent`}>
+          <h1
+            className={`text-4xl font-bold bg-gradient-to-r ${headerContent.gradient} bg-clip-text text-transparent`}
+          >
             {headerContent.title}
           </h1>
-          <p className="text-gray-400 text-lg">
-            {headerContent.subtitle}
-          </p>
+          <p className="text-gray-400 text-lg">{headerContent.subtitle}</p>
         </div>
 
         {/* Credit Score Card */}
@@ -81,7 +75,9 @@ export default function DashboardContent() {
                 <Target className="w-6 h-6 text-purple-400" />
               </div>
               <div className="ml-4">
-                <h3 className="text-lg font-semibold text-white">Score Range</h3>
+                <h3 className="text-lg font-semibold text-white">
+                  Score Range
+                </h3>
                 <p className="text-sm text-gray-400">Your current position</p>
               </div>
             </div>
@@ -148,14 +144,19 @@ export default function DashboardContent() {
         <div className="bg-[#0F1224] rounded-lg shadow-lg border border-[#0B0A0B] p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-xl font-semibold text-white">Score History</h3>
+              <h3 className="text-xl font-semibold text-white">
+                Score History
+              </h3>
               <p className="text-gray-400">Track your progress over time</p>
             </div>
-            <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700">
+            <Button
+              variant="outline"
+              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            >
               View Details
             </Button>
           </div>
-          
+
           {/* Placeholder for chart */}
           <div className="h-48 bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg border border-purple-500/20 flex items-center justify-center">
             <div className="text-center">
@@ -172,13 +173,19 @@ export default function DashboardContent() {
               <TrendingUp className="w-6 h-6 text-blue-400" />
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-white">Improvement Tips</h3>
-              <p className="text-sm text-gray-400">Actions to boost your score</p>
+              <h3 className="text-lg font-semibold text-white">
+                Improvement Tips
+              </h3>
+              <p className="text-sm text-gray-400">
+                Actions to boost your score
+              </p>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-blue-950/20 border border-blue-500/20 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-400 mb-2">Immediate Actions</h4>
+              <h4 className="font-semibold text-blue-400 mb-2">
+                Immediate Actions
+              </h4>
               <ul className="text-sm text-gray-300 space-y-1">
                 <li>• Pay off any overdue loans</li>
                 <li>• Reduce your current debt</li>
@@ -186,7 +193,9 @@ export default function DashboardContent() {
               </ul>
             </div>
             <div className="bg-green-950/20 border border-green-500/20 rounded-lg p-4">
-              <h4 className="font-semibold text-green-400 mb-2">Long-term Strategy</h4>
+              <h4 className="font-semibold text-green-400 mb-2">
+                Long-term Strategy
+              </h4>
               <ul className="text-sm text-gray-300 space-y-1">
                 <li>• Build a positive lending history</li>
                 <li>• Diversify your transactions</li>
@@ -204,12 +213,12 @@ export default function DashboardContent() {
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className={`text-4xl font-bold bg-gradient-to-r ${headerContent.gradient} bg-clip-text text-transparent`}>
+          <h1
+            className={`text-4xl font-bold bg-gradient-to-r ${headerContent.gradient} bg-clip-text text-transparent`}
+          >
             {headerContent.title}
           </h1>
-          <p className="text-gray-400 text-lg">
-            {headerContent.subtitle}
-          </p>
+          <p className="text-gray-400 text-lg">{headerContent.subtitle}</p>
         </div>
 
         {/* Welcome Card */}
@@ -242,12 +251,12 @@ export default function DashboardContent() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className={`text-4xl font-bold bg-gradient-to-r ${headerContent.gradient} bg-clip-text text-transparent`}>
+        <h1
+          className={`text-4xl font-bold bg-gradient-to-r ${headerContent.gradient} bg-clip-text text-transparent`}
+        >
           {headerContent.title}
         </h1>
-        <p className="text-gray-400 text-lg">
-          {headerContent.subtitle}
-        </p>
+        <p className="text-gray-400 text-lg">{headerContent.subtitle}</p>
       </div>
 
       {/* Welcome Card */}

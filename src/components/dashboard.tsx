@@ -9,7 +9,7 @@ import { DashboardProvider } from "@/shared/contexts/DashboardContext";
 import DashboardContent from "@/shared/components/DashboardContent";
 
 export function Dashboard() {
-  const { toasts, addToast, removeToast } = useToast();
+  const { toasts, removeToast } = useToast();
   const { isAuthenticated } = useAuthStore();
   const { isConnected } = useWallet();
 

@@ -77,14 +77,14 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <User className="h-4 w-4" />
-            Solicitudes
+            Requests
           </TabsTrigger>
           <TabsTrigger
             value="offer"
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <PlusCircle className="h-4 w-4" />
-            Crear Oferta
+            Create an offer
           </TabsTrigger>
           <TabsTrigger
             value="my-loans"

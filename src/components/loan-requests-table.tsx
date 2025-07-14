@@ -17,29 +17,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Clock, Percent, Loader2, User, Shield } from "lucide-react";
+import { Clock, Percent, User, Shield } from "lucide-react";
 import {
   getCreditTier,
   formatCurrency,
   formatPercentage,
 } from "@/shared/utils/credit";
 import { useLending } from "@/shared/contexts/lending-context";
+import { FundLoanDrawer } from "./fund-loan-drawer";
 
 interface LoanRequestsTableProps {
   addToast: (message: string, type: "success" | "error" | "info") => void;
 }
 
 export function LoanRequestsTable({ addToast }: LoanRequestsTableProps) {
-  const { loanRequests, fundLoan, isLoading } = useLending();
-
-  const handleFundLoan = async (loanId: string) => {
-    try {
-      await fundLoan(loanId);
-      addToast("Loan funded successfully", "success");
-    } catch {
-      addToast("Error loading loan requests", "error");
-    }
-  };
+  const { loanRequests } = useLending();
 
   const calculatePotentialReturn = (
     amount: number,
@@ -212,24 +204,24 @@ export function LoanRequestsTable({ addToast }: LoanRequestsTableProps) {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      size="sm"
-                      onClick={() => handleFundLoan(request.id)}
-                      disabled={request.status !== "pending" || isLoading}
-                      className={
-                        request.status === "pending"
-                          ? "bg-emerald-600 hover:bg-emerald-700"
-                          : "bg-gray-700 text-gray-400 cursor-not-allowed"
-                      }
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : request.status === "pending" ? (
-                        "Fund"
-                      ) : (
-                        "Funded"
-                      )}
-                    </Button>
+                    {request.status === "pending" ? (
+                      <FundLoanDrawer loanRequest={request} addToast={addToast}>
+                        <Button
+                          size="sm"
+                          className="bg-emerald-600 hover:bg-emerald-700"
+                        >
+                          Fund
+                        </Button>
+                      </FundLoanDrawer>
+                    ) : (
+                      <Button
+                        size="sm"
+                        className="bg-gray-700 text-gray-400 cursor-not-allowed"
+                        disabled
+                      >
+                        Funded
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               );

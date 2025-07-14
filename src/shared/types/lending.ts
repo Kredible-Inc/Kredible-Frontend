@@ -4,6 +4,7 @@ export interface User {
   ltv: number;
   apr: number;
   totalBorrowed: number;
+  totalLent: number;
   totalRepaid: number;
   activeLoans: number;
 }
