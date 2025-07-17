@@ -80,21 +80,21 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <Calculator className="h-4 w-4" />
-            Request Loan
+            Request Borrowing
           </TabsTrigger>
           <TabsTrigger
             value="available"
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <DollarSign className="h-4 w-4" />
-            Available Loans
+            Available Borrowings
           </TabsTrigger>
           <TabsTrigger
             value="my-loans"
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <TrendingUp className="h-4 w-4" />
-            My Loans
+            My Borrowings
           </TabsTrigger>
         </TabsList>
 
@@ -105,18 +105,17 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-white">
                   <Calculator className="h-5 w-5 text-blue-400" />
-                  Request Loan
+                  Request Borrowing
                 </CardTitle>
                 <CardDescription className="text-gray-400">
-                  With your credit score of {user.creditScore}, you can request
-                  up to {creditInfo.ltv}% LTV with{" "}
-                  {formatPercentage(creditInfo.apr)} APR
+                  With your credit score of {user.creditScore}, you can request a borrowing
+                  up to {creditInfo.ltv}% LTV with {formatPercentage(creditInfo.apr)} APR
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="amount" className="text-gray-300">
-                    Amount to request (USDC)
+                    Amount to borrow (USDC)
                   </Label>
                   <Input
                     id="amount"
@@ -131,7 +130,7 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
 
                 <div className="space-y-2">
                   <Label htmlFor="duration" className="text-gray-300">
-                    Duration (days)
+                    Borrowing Duration (days)
                   </Label>
                   <Input
                     id="duration"
@@ -147,11 +146,11 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
 
                 {amount > 0 && (
                   <div className="space-y-3">
-                    <h4 className="font-semibold text-white">Loan Summary</h4>
+                    <h4 className="font-semibold text-white">Borrowing Summary</h4>
 
                     <div className="bg-blue-950/30 border border-blue-400/30 p-4 rounded-lg space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-gray-300">Amount requested:</span>
+                        <span className="text-gray-300">Amount borrowed:</span>
                         <span className="font-semibold text-white">
                           {formatCurrency(amount)}
                         </span>
@@ -175,7 +174,7 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-300">
-                          Required collateral:
+                          Required collateral for borrowing:
                         </span>
                         <span className="font-semibold text-white">
                           {requiredCollateral.toFixed(2)} XLM
@@ -192,9 +191,8 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                     <Alert className="bg-yellow-900/20 border-yellow-500/30">
                       <AlertTriangle className="h-4 w-4 text-yellow-400" />
                       <AlertDescription className="text-yellow-200">
-                        Your collateral will be locked until you repay the loan.
-                        If the XLM price drops significantly, you could be
-                        liquidated.
+                        Your collateral will be locked until you repay the borrowing.
+                        If the XLM price drops significantly, you could be liquidated.
                       </AlertDescription>
                     </Alert>
 
@@ -207,10 +205,10 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                       {isLoading ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Creating Loan Request...
+                          Creating Borrowing Request...
                         </>
                       ) : (
-                        "Request Loan"
+                        "Request Borrowing"
                       )}
                     </Button>
                   </div>
@@ -306,10 +304,10 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                     </div>
                     <div>
                       <h4 className="font-semibold text-white">
-                        Request your loan
+                        Request your borrowing
                       </h4>
                       <p className="text-sm text-gray-400">
-                        Enter the amount in USDC you need
+                        Enter the amount in USDC you need to borrow
                       </p>
                     </div>
                   </div>
@@ -320,7 +318,7 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                     </div>
                     <div>
                       <h4 className="font-semibold text-white">
-                        Lock XLM according to your allowed LTV
+                        Lock XLM according to your allowed LTV for borrowing
                       </h4>
                       <p className="text-sm text-gray-400">
                         Lock XLM according to your allowed LTV
@@ -334,10 +332,10 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                     </div>
                     <div>
                       <h4 className="font-semibold text-white">
-                        Wait for funding
+                        Wait for lending
                       </h4>
                       <p className="text-sm text-gray-400">
-                        Lenders will see your request and can fund it
+                        Lenders will see your borrowing request and can fund it
                       </p>
                     </div>
                   </div>
@@ -364,7 +362,7 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
         </TabsContent>
 
         <TabsContent value="my-loans">
-          <MyLoansTable addToast={addToast} />
+          <MyLoansTable addToast={addToast} show="borrowed" />
         </TabsContent>
       </Tabs>
     </div>

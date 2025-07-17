@@ -119,7 +119,7 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
             const riskInfo = getRiskLevel(loan.minCreditScore);
             const canTakeLoan = user.creditScore >= loan.minCreditScore;
 
-            return (
+              return (
               <Card
                 key={loan.id}
                 className="bg-[#0F1224] border-[#0B0A0B] hover:border-blue-500/30 transition-colors"
@@ -156,7 +156,7 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
                           <div>
                             <p className="text-sm text-gray-400">Amount</p>
                             <p className="font-semibold text-white">
-                              {formatCurrency(loan.amountUSDC)}
+                    {formatCurrency(loan.amountUSDC)}
                             </p>
                           </div>
                         </div>
@@ -166,7 +166,7 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
                           <div>
                             <p className="text-sm text-gray-400">APR</p>
                             <p className="font-semibold text-white">
-                              {formatPercentage(loan.apr)}
+                        {formatPercentage(loan.apr)}
                             </p>
                           </div>
                         </div>
@@ -188,14 +188,14 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
                         <span>•</span>
                         <span>
                           Created: {loan.createdAt.toLocaleDateString()}
-                        </span>
-                      </div>
+                      </span>
+                    </div>
                     </div>
 
                     <div className="ml-6 flex flex-col items-end gap-3">
                       {canTakeLoan ? (
                         <TakeLoanDrawer loan={loan} addToast={addToast}>
-                          <Button
+                    <Button
                             disabled={processingLoan === loan.id}
                             className="bg-blue-600 hover:bg-blue-700 text-white"
                           >
@@ -228,8 +228,8 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
                       )}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+      </CardContent>
+    </Card>
             );
           })}
         </div>

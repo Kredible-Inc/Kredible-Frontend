@@ -52,16 +52,16 @@ export function CreditScoreCard({ user }: CreditScoreCardProps) {
             </div>
             <div className="text-sm text-gray-400">Max LTV</div>
           </div>
-          <div className="text-center p-4 bg-blue-950/20 border border-blue-400/20 rounded-lg">
-            <Percent className="h-6 w-6 text-blue-300 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-blue-300">
+          <div className="text-center p-4 bg-emerald-950/30 border border-emerald-400/30 rounded-lg">
+            <Percent className="h-6 w-6 text-emerald-400 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-emerald-400">
               {formatPercentage(creditInfo.apr)}
             </div>
             <div className="text-sm text-gray-400">Min APR</div>
           </div>
-          <div className="text-center p-4 bg-blue-950/10 border border-blue-300/20 rounded-lg">
-            <TrendingUp className="h-6 w-6 text-blue-200 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-blue-200">
+          <div className="text-center p-4 bg-purple-950/30 border border-purple-400/30 rounded-lg">
+            <TrendingUp className="h-6 w-6 text-purple-400 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-purple-400">
               {user.totalRepaid}
             </div>
             <div className="text-sm text-gray-400">Repaid Loans</div>
