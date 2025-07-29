@@ -18,7 +18,7 @@ export const handleWalletAuth = async (walletAddress: string) => {
       // User exists, do login
       useAuthStore.getState().login(existingUser);
       useUserStore.getState().setUser(existingUser);
-      
+
       return { success: true, isNewUser: false, user: existingUser };
     }
 
@@ -44,7 +44,7 @@ export const handleWalletAuth = async (walletAddress: string) => {
     // Actualizar stores
     useAuthStore.getState().login(userWithId);
     useUserStore.getState().setUser(userWithId);
-    
+
     return { success: true, isNewUser: true, user: userWithId };
   } catch (error) {
     console.error("Error in handleWalletAuth:", error);
@@ -85,7 +85,7 @@ export const updateUserInFirestore = async (
 ) => {
   try {
     await UserService.updateUser(userId, updates);
-    
+
     // Actualizar el store local
     const currentUser = useAuthStore.getState().user;
     if (currentUser) {
@@ -93,7 +93,7 @@ export const updateUserInFirestore = async (
       useAuthStore.getState().login(updatedUser);
       useUserStore.getState().setUser(updatedUser);
     }
-    
+
     return { success: true };
   } catch (error) {
     console.error("Error updating user in Firestore:", error);
@@ -112,4 +112,3 @@ export const getUserByWalletAddress = async (
     return null;
   }
 };
- 

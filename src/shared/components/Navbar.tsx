@@ -7,7 +7,8 @@ import ConnectWallet from "./ConnectWallet";
 import { Button } from "@/components/ui/button";
 import { User, TrendingUp, DollarSign, Shield } from "lucide-react";
 import AccountInfoDialog from "./AccountInfoDialog";
-import { ThemeToggle } from "./ThemeToggle";
+// import Image from "next/image";
+// import Icon from "../../../public/foto1.png"
 import { useDashboard } from "@/shared/contexts/DashboardContext";
 
 export default function Navbar() {
@@ -28,9 +29,10 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-black mb-[7rem] backdrop-blur-sm border-b border-white p-4">
+    <nav className="bg-black mb-[7rem] p-[2rem]  backdrop-blur-sm border-b border-white">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center">
+          {/* <Image src={Icon} alt="Image" width={100} height={20}/> */}
           <h1 className="text-2xl font-bold text-white">Kredible</h1>
 
           {/* Navigation Tabs */}
@@ -80,7 +82,6 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <ThemeToggle />
           <Button
             variant="ghost"
             size="sm"

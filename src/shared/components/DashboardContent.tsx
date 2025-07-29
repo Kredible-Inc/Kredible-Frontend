@@ -10,10 +10,15 @@ import { BorrowerInterface } from "@/components/borrower-interface";
 import { LenderInterface } from "@/components/lender-interface";
 import { useToast } from "@/shared/hooks/use-toast";
 // import { useCreditScore } from "@/shared/hooks/useCreditScore";
+import {
+  LendingHistoryVisual,
+  downloadLendingHistoryPDF,
+} from "@/components/lending-history-visual";
+import { Download } from "lucide-react";
 
 export default function DashboardContent() {
   const { user: authUser } = useAuthStore();
-  const { user: lendingUser } = useLending();
+  const { user: lendingUser, lendingHistory } = useLending();
   const { activeTab } = useDashboard();
   const { addToast } = useToast();
   // const { data: creditScoreData, isLoading: isScoreLoading } = useCreditScore(lendingUser.address);
@@ -28,20 +33,20 @@ export default function DashboardContent() {
         };
       case "loans":
         return {
-          title: "Lending Platform",
-          subtitle: "Earn interest by providing liquidity to borrowers",
+          title: "Lend & Earn",
+          subtitle: "Earn interest by providing liquidity to borrowings",
           gradient: "from-blue-400 to-cyan-400",
         };
       case "borrows":
         return {
-          title: "Borrowing Platform",
+          title: "Borrowings Platform",
           subtitle: "Access liquidity with your credit score and collateral",
           gradient: "from-green-400 to-emerald-400",
         };
       default:
         return {
-          title: "Stellar Lending Platform",
-          subtitle: "Decentralized P2P lending with on-chain credit score",
+          title: "Stellar Lendings Platform",
+          subtitle: "Decentralized P2P lendings with on-chain credit score",
           gradient: "from-blue-400 to-purple-400",
         };
     }
@@ -50,6 +55,9 @@ export default function DashboardContent() {
   const headerContent = getHeaderContent();
 
   if (activeTab === "credit-score") {
+    const completedLendings = lendingHistory.filter(
+      (loan) => loan.type === "lent" && loan.status === "repaid",
+    );
     return (
       <div className="space-y-6">
         {/* Header */}
@@ -143,25 +151,21 @@ export default function DashboardContent() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-xl font-semibold text-white">
-                Score History
+                Credit History
               </h3>
               <p className="text-gray-400">Track your progress over time</p>
             </div>
             <Button
               variant="outline"
-              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+              className="border-gray-600 text-black bg-white hover:bg-gray-200"
+              onClick={() => downloadLendingHistoryPDF(completedLendings)}
             >
-              View Details
+              Download Credit History <Download />
             </Button>
           </div>
 
-          {/* Placeholder for chart */}
-          <div className="h-48 bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg border border-purple-500/20 flex items-center justify-center">
-            <div className="text-center">
-              <TrendingUp className="w-12 h-12 text-purple-400 mx-auto mb-2" />
-              <p className="text-gray-400">Score history chart coming soon</p>
-            </div>
-          </div>
+          {/* Lending history visual */}
+          <LendingHistoryVisual />
         </div>
 
         {/* Improvement Tips */}
@@ -224,10 +228,10 @@ export default function DashboardContent() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-2xl font-bold text-white">
-                Lending Dashboard
+                Lendings Dashboard
               </h2>
               <p className="text-gray-400">
-                Manage your lending portfolio and find borrowers
+                Manage your lendings portfolio and find borrowings
               </p>
             </div>
             <div className="text-right">
@@ -262,10 +266,10 @@ export default function DashboardContent() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-2xl font-bold text-white">
-              Borrowing Dashboard
+              Borrowings Dashboard
             </h2>
             <p className="text-gray-400">
-              Find lenders and manage your borrowing needs
+              Find lenders and manage your borrowings
             </p>
           </div>
           <div className="text-right">

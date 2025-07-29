@@ -40,7 +40,7 @@ export function TakeLoanDrawer({
 }: TakeLoanDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
-  const { takeLoan, user } = useLending();
+  const { takeLoan } = useLending();
 
   const getRiskLevel = (score: number) => {
     if (score >= 700)

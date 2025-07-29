@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +14,6 @@ import {
 } from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/shared/utils/credit";
 import { useLending } from "@/shared/contexts/lending-context";
-import { AvailableLoan } from "@/shared/types/lending";
 import { TakeLoanDrawer } from "./take-loan-drawer";
 
 interface AvailableLoansTableProps {
@@ -23,29 +21,7 @@ interface AvailableLoansTableProps {
 }
 
 export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
-  const { availableLoans, takeLoan, isLoading, user } = useLending();
-  const [processingLoan, setProcessingLoan] = useState<string | null>(null);
-
-  const handleTakeLoan = async (loan: AvailableLoan) => {
-    if (user.creditScore < loan.minCreditScore) {
-      addToast(
-        `Your credit score (${user.creditScore}) is below the minimum required (${loan.minCreditScore})`,
-        "error",
-      );
-      return;
-    }
-
-    setProcessingLoan(loan.id);
-    try {
-      await takeLoan(loan.id);
-      addToast("Loan taken successfully", "success");
-    } catch (error) {
-      console.error("Error taking loan:", error);
-      addToast("Error taking loan", "error");
-    } finally {
-      setProcessingLoan(null);
-    }
-  };
+  const { availableLoans, isLoading, user } = useLending();
 
   const getRiskLevel = (creditScore: number) => {
     if (creditScore >= 700)
@@ -196,20 +172,12 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
                       {canTakeLoan ? (
                         <TakeLoanDrawer loan={loan} addToast={addToast}>
                           <Button
-                            disabled={processingLoan === loan.id}
                             className="bg-blue-600 hover:bg-blue-700 text-white"
                           >
-                            {processingLoan === loan.id ? (
-                              <>
-                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                                Processing...
-                              </>
-                            ) : (
-                              <>
+                            <>
                                 <CheckCircle className="w-4 h-4 mr-2" />
                                 Take Loan
                               </>
-                            )}
                           </Button>
                         </TakeLoanDrawer>
                       ) : (

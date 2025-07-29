@@ -84,14 +84,14 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <PlusCircle className="h-4 w-4" />
-            Create an offer
+            Create Lending Offer
           </TabsTrigger>
           <TabsTrigger
             value="my-loans"
             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300"
           >
             <TrendingUp className="h-4 w-4" />
-            My Loans
+            My Lendings
           </TabsTrigger>
         </TabsList>
 
@@ -105,7 +105,7 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-white">
                   <DollarSign className="h-5 w-5 text-blue-400" />
-                  Create Loan Offer
+                  Create Lending Offer
                 </CardTitle>
                 <CardDescription className="text-gray-400">
                   Define your terms and conditions for lending
@@ -261,7 +261,7 @@ export function LenderInterface({ addToast }: LenderInterfaceProps) {
         </TabsContent>
 
         <TabsContent value="my-loans">
-          <MyLoansTable addToast={addToast} />
+          <MyLoansTable addToast={addToast} show="lent" />
         </TabsContent>
       </Tabs>
     </div>
