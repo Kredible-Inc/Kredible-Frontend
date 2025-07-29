@@ -73,22 +73,24 @@ export default function ConnectWallet() {
   }
 
   return (
-    <button
-      onClick={connect}
-      disabled={isConnecting}
-      className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-    >
-      {isConnecting ? (
-        <>
-          <Loader2 className="w-4 h-4 animate-spin" />
-          Connecting...
-        </>
-      ) : (
-        <>
-          <Wallet className="w-5 h-5" />
-          Connect Wallet
-        </>
-      )}
-    </button>
+    <div className="w-full flex justify-center items-center">
+      <button
+        onClick={connect}
+        disabled={isConnecting}
+        className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+      >
+        {isConnecting ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Connecting...
+          </>
+        ) : (
+          <>
+            <Wallet className="w-5 h-5" />
+            Connect Wallet
+          </>
+        )}
+      </button>
+    </div>
   );
 }
