@@ -221,10 +221,14 @@ export function LendingProvider({
         apr: newRequest.apr,
         duration: newRequest.duration,
         startDate: new Date(),
-        dueDate: new Date(Date.now() + newRequest.duration * 24 * 60 * 60 * 1000),
+        dueDate: new Date(
+          Date.now() + newRequest.duration * 24 * 60 * 60 * 1000,
+        ),
         status: "pending",
         interestEarned: 0,
-        interestOwed: ((newRequest.amountUSDC * newRequest.apr) / 100) * (newRequest.duration / 365),
+        interestOwed:
+          ((newRequest.amountUSDC * newRequest.apr) / 100) *
+          (newRequest.duration / 365),
       } as unknown as MyLoan & { status: string };
       setLendingHistory((prev) => [newBorrowedLoan, ...prev]);
 

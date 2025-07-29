@@ -32,7 +32,7 @@ function AppContent({ user }: { user: User }) {
 
   if (!isAuthenticated || !user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0F1224] to-black flex items-center justify-center p-6">
+      <div className="min-h-screen w-full bg-gradient-to-br from-[#0F1224] to-black flex items-center justify-center p-6">
         <div className="text-center space-y-6">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Welcome to Kredible

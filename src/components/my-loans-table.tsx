@@ -54,7 +54,9 @@ export function MyLoansTable({ addToast, show = "both" }: MyLoansTableProps) {
     return new Date(date).toLocaleDateString();
   };
 
-  function isPendingStatus(loan: MyLoan | (MyLoan & { status: string })): boolean {
+  function isPendingStatus(
+    loan: MyLoan | (MyLoan & { status: string }),
+  ): boolean {
     return (loan as { status: string }).status === "pending";
   }
 

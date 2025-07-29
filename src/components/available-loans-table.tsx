@@ -171,13 +171,11 @@ export function AvailableLoansTable({ addToast }: AvailableLoansTableProps) {
                     <div className="ml-6 flex flex-col items-end gap-3">
                       {canTakeLoan ? (
                         <TakeLoanDrawer loan={loan} addToast={addToast}>
-                          <Button
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
-                          >
+                          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                             <>
-                                <CheckCircle className="w-4 h-4 mr-2" />
-                                Take Loan
-                              </>
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                              Take Loan
+                            </>
                           </Button>
                         </TakeLoanDrawer>
                       ) : (
