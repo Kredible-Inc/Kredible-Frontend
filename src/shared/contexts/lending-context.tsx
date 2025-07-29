@@ -148,43 +148,43 @@ export function LendingProvider({
   const [lendingHistory, setLendingHistory] = useState<MyLoan[]>([
     // Dummy completed lendings for visual history
     {
-      id: 'lend_1',
-      type: 'lent',
-      counterparty: 'GABCD...1234',
+      id: "lend_1",
+      type: "lent",
+      counterparty: "GABCD...1234",
       amountUSDC: 1200,
       apr: 7.5,
       duration: 30,
-      startDate: new Date('2024-04-01'),
-      dueDate: new Date('2024-05-01'),
-      status: 'repaid',
+      startDate: new Date("2024-04-01"),
+      dueDate: new Date("2024-05-01"),
+      status: "repaid",
       collateralXLM: 10000,
       interestEarned: 20,
       interestOwed: 0,
     },
     {
-      id: 'lend_2',
-      type: 'lent',
-      counterparty: 'GXYZ...5678',
+      id: "lend_2",
+      type: "lent",
+      counterparty: "GXYZ...5678",
       amountUSDC: 500,
       apr: 8.0,
       duration: 15,
-      startDate: new Date('2024-03-10'),
-      dueDate: new Date('2024-03-25'),
-      status: 'repaid',
+      startDate: new Date("2024-03-10"),
+      dueDate: new Date("2024-03-25"),
+      status: "repaid",
       collateralXLM: 4000,
       interestEarned: 7,
       interestOwed: 0,
     },
     {
-      id: 'lend_3',
-      type: 'lent',
-      counterparty: 'GHIJ...9999',
+      id: "lend_3",
+      type: "lent",
+      counterparty: "GHIJ...9999",
       amountUSDC: 2000,
       apr: 6.5,
       duration: 45,
-      startDate: new Date('2024-02-01'),
-      dueDate: new Date('2024-03-17'),
-      status: 'repaid',
+      startDate: new Date("2024-02-01"),
+      dueDate: new Date("2024-03-17"),
+      status: "repaid",
       collateralXLM: 15000,
       interestEarned: 40,
       interestOwed: 0,
@@ -213,7 +213,7 @@ export function LendingProvider({
       setLoanRequests((prev) => [newRequest, ...prev]);
 
       // Add to lendingHistory as a pending borrowed loan
-      const newBorrowedLoan: MyLoan = {
+      const newBorrowedLoan = {
         id: `borrow_${newRequest.id}`,
         type: "borrowed",
         counterparty: "Awaiting lender", // Show as pending
@@ -222,10 +222,10 @@ export function LendingProvider({
         duration: newRequest.duration,
         startDate: new Date(),
         dueDate: new Date(Date.now() + newRequest.duration * 24 * 60 * 60 * 1000),
-        status: "pending" as any, // We'll handle this in the UI for display, even if not in the type
+        status: "pending",
         interestEarned: 0,
         interestOwed: ((newRequest.amountUSDC * newRequest.apr) / 100) * (newRequest.duration / 365),
-      };
+      } as unknown as MyLoan & { status: string };
       setLendingHistory((prev) => [newBorrowedLoan, ...prev]);
 
       // Update user statistics

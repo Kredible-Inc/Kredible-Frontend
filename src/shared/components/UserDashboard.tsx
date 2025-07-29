@@ -48,14 +48,14 @@ export default function UserDashboard() {
   // If authenticated, show main dashboard
   return (
     <DashboardProvider>
-    <div className="min-h-screen bg-gradient-to-br from-[#0F1224] to-black">
+      <div className="min-h-screen bg-gradient-to-br from-[#0F1224] to-black">
         <Navbar />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-6">
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto p-6">
           <DashboardContent />
         </div>
       </div>
     </DashboardProvider>
   );
-} 
+}

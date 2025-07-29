@@ -56,12 +56,12 @@ export default function Page() {
   const user: User = {
     address: WALLET_ADDRESS,
     creditScore: score,
-  ltv: 70,
-  apr: 7.0,
-  totalBorrowed: 15000,
+    ltv: 70,
+    apr: 7.0,
+    totalBorrowed: 15000,
     totalLent: 0,
-  totalRepaid: 12,
-  activeLoans: 2,
+    totalRepaid: 12,
+    activeLoans: 2,
   };
 
   if (isLoading) {

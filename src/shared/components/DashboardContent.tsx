@@ -10,12 +10,15 @@ import { BorrowerInterface } from "@/components/borrower-interface";
 import { LenderInterface } from "@/components/lender-interface";
 import { useToast } from "@/shared/hooks/use-toast";
 // import { useCreditScore } from "@/shared/hooks/useCreditScore";
-import { LendingHistoryVisual, downloadLendingHistoryPDF } from "@/components/lending-history-visual";
+import {
+  LendingHistoryVisual,
+  downloadLendingHistoryPDF,
+} from "@/components/lending-history-visual";
 import { Download } from "lucide-react";
 
 export default function DashboardContent() {
   const { user: authUser } = useAuthStore();
-  const { user: lendingUser } = useLending();
+  const { user: lendingUser, lendingHistory } = useLending();
   const { activeTab } = useDashboard();
   const { addToast } = useToast();
   // const { data: creditScoreData, isLoading: isScoreLoading } = useCreditScore(lendingUser.address);
@@ -52,9 +55,8 @@ export default function DashboardContent() {
   const headerContent = getHeaderContent();
 
   if (activeTab === "credit-score") {
-    const { lendingHistory } = useLending();
     const completedLendings = lendingHistory.filter(
-      (loan) => loan.type === "lent" && loan.status === "repaid"
+      (loan) => loan.type === "lent" && loan.status === "repaid",
     );
     return (
       <div className="space-y-6">

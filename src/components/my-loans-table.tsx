@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/shared/utils/credit";
 import { useLending } from "@/shared/contexts/lending-context";
+import type { MyLoan } from "@/shared/types/lending";
 
 interface MyLoansTableProps {
   addToast: (message: string, type: "success" | "error" | "info") => void;
@@ -52,6 +53,10 @@ export function MyLoansTable({ addToast, show = "both" }: MyLoansTableProps) {
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString();
   };
+
+  function isPendingStatus(loan: MyLoan | (MyLoan & { status: string })): boolean {
+    return (loan as { status: string }).status === "pending";
+  }
 
   return (
     <div className="space-y-6">
@@ -126,7 +131,7 @@ export function MyLoansTable({ addToast, show = "both" }: MyLoansTableProps) {
                       <Badge
                         variant="outline"
                         className={
-                          (loan as any).status === "pending"
+                          isPendingStatus(loan)
                             ? "text-yellow-400 border-yellow-500 bg-yellow-900/20"
                             : loan.status === "active"
                               ? "text-emerald-400 border-emerald-500"
@@ -137,7 +142,7 @@ export function MyLoansTable({ addToast, show = "both" }: MyLoansTableProps) {
                                   : "text-gray-400 border-gray-500"
                         }
                       >
-                        {(loan as any).status === "pending"
+                        {isPendingStatus(loan)
                           ? "Request Pending - Awaiting lender"
                           : loan.status === "active"
                             ? "Active"
@@ -217,7 +222,9 @@ export function MyLoansTable({ addToast, show = "both" }: MyLoansTableProps) {
                   <TableHead className="text-gray-300">APR</TableHead>
                   <TableHead className="text-gray-300">Duration</TableHead>
                   <TableHead className="text-gray-300">Due Date</TableHead>
-                  <TableHead className="text-gray-300">Interest Earned</TableHead>
+                  <TableHead className="text-gray-300">
+                    Interest Earned
+                  </TableHead>
                   <TableHead className="text-gray-300">Status</TableHead>
                   <TableHead className="text-gray-300">Actions</TableHead>
                 </TableRow>

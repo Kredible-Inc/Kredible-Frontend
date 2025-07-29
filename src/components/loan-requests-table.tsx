@@ -206,8 +206,8 @@ export function LoanRequestsTable({ addToast }: LoanRequestsTableProps) {
                   <TableCell>
                     {request.status === "pending" ? (
                       <FundLoanDrawer loanRequest={request} addToast={addToast}>
-                    <Button
-                      size="sm"
+                        <Button
+                          size="sm"
                           className="bg-emerald-600 hover:bg-emerald-700"
                         >
                           Fund

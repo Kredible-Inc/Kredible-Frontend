@@ -1,11 +1,12 @@
 import { useLending } from "@/shared/contexts/lending-context";
 import { CheckCircle, Flame } from "lucide-react";
 import jsPDF from "jspdf";
+import type { MyLoan } from "@/shared/types/lending";
 
 export function LendingHistoryVisual() {
   const { lendingHistory } = useLending();
   const completedLendings = lendingHistory.filter(
-    (loan) => loan.type === "lent" && loan.status === "repaid"
+    (loan) => loan.type === "lent" && loan.status === "repaid",
   );
 
   if (completedLendings.length === 0) {
@@ -13,7 +14,9 @@ export function LendingHistoryVisual() {
       <div className="h-48 flex flex-col items-center justify-center text-gray-500">
         <Flame className="w-10 h-10 mb-2 text-gray-700" />
         <div className="text-lg font-semibold">No completed lendings yet</div>
-        <div className="text-sm">Your paid-off lendings will appear here as a badge of honor!</div>
+        <div className="text-sm">
+          Your paid-off lendings will appear here as a badge of honor!
+        </div>
       </div>
     );
   }
@@ -43,7 +46,7 @@ export function LendingHistoryVisual() {
   );
 }
 
-export function downloadLendingHistoryPDF(lendingHistory: any[]) {
+export function downloadLendingHistoryPDF(lendingHistory: MyLoan[]) {
   const doc = new jsPDF();
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(18);
@@ -57,7 +60,11 @@ export function downloadLendingHistoryPDF(lendingHistory: any[]) {
     y += 8;
     doc.text(`Borrower: ${loan.counterparty}`, 14, y);
     y += 8;
-    doc.text(`Paid off on: ${new Date(loan.dueDate).toLocaleDateString()}`, 14, y);
+    doc.text(
+      `Paid off on: ${new Date(loan.dueDate).toLocaleDateString()}`,
+      14,
+      y,
+    );
     y += 8;
     doc.text(`APR: ${loan.apr}%`, 14, y);
     y += 8;
@@ -69,4 +76,4 @@ export function downloadLendingHistoryPDF(lendingHistory: any[]) {
     }
   });
   doc.save("lending-history.pdf");
-} 
+}

@@ -108,8 +108,9 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                   Request Borrowing
                 </CardTitle>
                 <CardDescription className="text-gray-400">
-                  With your credit score of {user.creditScore}, you can request a borrowing
-                  up to {creditInfo.ltv}% LTV with {formatPercentage(creditInfo.apr)} APR
+                  With your credit score of {user.creditScore}, you can request
+                  a borrowing up to {creditInfo.ltv}% LTV with{" "}
+                  {formatPercentage(creditInfo.apr)} APR
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -146,7 +147,9 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
 
                 {amount > 0 && (
                   <div className="space-y-3">
-                    <h4 className="font-semibold text-white">Borrowing Summary</h4>
+                    <h4 className="font-semibold text-white">
+                      Borrowing Summary
+                    </h4>
 
                     <div className="bg-blue-950/30 border border-blue-400/30 p-4 rounded-lg space-y-2">
                       <div className="flex justify-between">
@@ -191,8 +194,9 @@ export function BorrowerInterface({ addToast }: BorrowerInterfaceProps) {
                     <Alert className="bg-yellow-900/20 border-yellow-500/30">
                       <AlertTriangle className="h-4 w-4 text-yellow-400" />
                       <AlertDescription className="text-yellow-200">
-                        Your collateral will be locked until you repay the borrowing.
-                        If the XLM price drops significantly, you could be liquidated.
+                        Your collateral will be locked until you repay the
+                        borrowing. If the XLM price drops significantly, you
+                        could be liquidated.
                       </AlertDescription>
                     </Alert>
 

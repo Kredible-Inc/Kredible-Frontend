@@ -50,10 +50,10 @@ export default function ConnectWallet() {
   if (isAuthenticated && user && address) {
     return (
       <div className="flex items-center gap-2 px-4 py-2 bg-green-900/20 border border-green-500/20 rounded-lg">
-          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
         <span className="text-sm font-mono text-green-300">
-            {formatAddress(address)}
-          </span>
+          {formatAddress(address)}
+        </span>
       </div>
     );
   }
@@ -61,10 +61,10 @@ export default function ConnectWallet() {
   if (isConnected && address && !isAuthenticated) {
     return (
       <div className="flex items-center gap-2 px-4 py-2 bg-yellow-900/20 border border-yellow-500/20 rounded-lg">
-          <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+        <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
         <span className="text-sm font-mono text-yellow-300">
-            {formatAddress(address)}
-          </span>
+          {formatAddress(address)}
+        </span>
         <div className="text-sm text-yellow-300">
           {isProcessingAuth ? "Verifying..." : "Wallet connected"}
         </div>
